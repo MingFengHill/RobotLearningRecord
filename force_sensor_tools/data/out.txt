@@ -1,0 +1,759 @@
+[33m[ WARN] [1634804824.299794689]: serialport inavailble[0m
+[0m[ INFO] [1634804824.030966233]: ---- UseCalibration in XML: true ----[0m
+[0m[ INFO] [1634804824.031565516]: ---- uesCalibration_ set true ----[0m
+[0m[ INFO] [1634804824.031586164]: ---- centroidX in XML: 0.000464 ----[0m
+[0m[ INFO] [1634804824.031597196]: ---- centroidX set 0.000464 ----[0m
+[0m[ INFO] [1634804824.031605095]: ---- centroidY in XML: 0.003431 ----[0m
+[0m[ INFO] [1634804824.031610629]: ---- centroidY set 0.003431 ----[0m
+[0m[ INFO] [1634804824.031615987]: ---- centroidZ in XML: 0.003431 ----[0m
+[0m[ INFO] [1634804824.031622963]: ---- centroidZ set 0.003431 ----[0m
+[0m[ INFO] [1634804824.031630143]: ---- Gcos in XML: 1.716422 ----[0m
+[0m[ INFO] [1634804824.031635790]: ---- Gcos set 1.716422 ----[0m
+[0m[ INFO] [1634804824.031642572]: ---- Gsin in XML: 1.900001 ----[0m
+[0m[ INFO] [1634804824.031650211]: ---- Gsin set 1.900001 ----[0m
+[0m[ INFO] [1634804824.031657305]: ---- Gcos in XML: 12.224326 ----[0m
+[0m[ INFO] [1634804824.031665154]: ---- Gcos set 12.224326 ----[0m
+[0m[ INFO] [1634804824.031671879]: ---- forceX0 in XML: 198.987442 ----[0m
+[0m[ INFO] [1634804824.031678965]: ---- forceX0 set 198.987442 ----[0m
+[0m[ INFO] [1634804824.031685738]: ---- forceY0 in XML: -163.825089 ----[0m
+[0m[ INFO] [1634804824.031692863]: ---- forceY0 set -163.825089 ----[0m
+[0m[ INFO] [1634804824.031701533]: ---- forceZ0 in XML: 328.753113 ----[0m
+[0m[ INFO] [1634804824.031708585]: ---- forceZ0 set 328.753113 ----[0m
+[0m[ INFO] [1634804824.031715512]: ---- momentX0 in XML: 7.710935 ----[0m
+[0m[ INFO] [1634804824.031722481]: ---- momentX0 set 7.710935 ----[0m
+[0m[ INFO] [1634804824.031729242]: ---- momentY0 in XML: -6.150869 ----[0m
+[0m[ INFO] [1634804824.031736108]: ---- momentY0 set -6.150869 ----[0m
+[0m[ INFO] [1634804824.031743914]: ---- momentZ0 in XML: -12.923462 ----[0m
+[0m[ INFO] [1634804824.031750852]: ---- momentZ0 set -12.923462 ----[0m
+[0m[ INFO] [1634804824.031757062]: Parse file /home/pc/RHCS/ws_ros1/calibration_config.xml success.[0m
+[0m[ INFO] [1634804824.032812833]: Serial Port initialized[0m
+[0m[ INFO] [1634804824.299735666]: SensorDriver init down.[0m
+[0m[ INFO] [1634804824.299750722]: ---- driver init success, start service :) ----[0m
+[0m[ INFO] [1634804824.299839228]: before calibration:
+force_x: -898931712.000000, force_y: 0.000000, force_z: -1525.740234,
+moment_x: 0.000000, moment_y: -1525.740234, moment_z: 0.000000[0m
+[0m[ INFO] [1634804824.299852824]: get joint state: 0.000000 | 0.000000 | 0.000000 | 0.000000| 0.000000 |0.000000[0m
+[0m[ INFO] [1634804824.299886564]: after calibration:
+force_x: -898931904.000000, force_y: 162.108673, force_z: -1854.493408,
+moment_x: -7.705046, moment_y: -1519.595825, moment_z: 12.929184[0m
+[0m[ INFO] [1634804825.299967297]: before calibration:
+force_x: 201.346085, force_y: -158.521118, force_z: 310.997864,
+moment_x: 8.115058, moment_y: -6.346567, moment_z: -13.009172[0m
+[0m[ INFO] [1634804825.300007933]: get joint state: 2.448089 | -1.748056 | 0.455786 | -2.693620| -1.716280 |0.532351[0m
+[0m[ INFO] [1634804825.300045694]: after calibration:
+force_x: 2.057032, force_y: 3.607261, force_z: -8.714046,
+moment_x: 0.440964, moment_y: -0.200928, moment_z: -0.085463[0m
+[0m[ INFO] [1634804826.300011104]: before calibration:
+force_x: 201.386063, force_y: -158.545105, force_z: 311.200989,
+moment_x: 8.115050, moment_y: -6.347760, moment_z: -13.007099[0m
+[0m[ INFO] [1634804826.300078975]: get joint state: 2.448089 | -1.748080 | 0.455798 | -2.693596| -1.716304 |0.532315[0m
+[0m[ INFO] [1634804826.300137371]: after calibration:
+force_x: 2.096950, force_y: 3.583255, force_z: -8.511048,
+moment_x: 0.440957, moment_y: -0.202121, moment_z: -0.083389[0m
+[0m[ INFO] [1634804827.299941598]: before calibration:
+force_x: 201.415466, force_y: -158.596405, force_z: 311.199310,
+moment_x: 8.115130, moment_y: -6.347793, moment_z: -13.009632[0m
+[0m[ INFO] [1634804827.299988196]: get joint state: 2.448089 | -1.748116 | 0.455786 | -2.693656| -1.716304 |0.532327[0m
+[0m[ INFO] [1634804827.300033511]: after calibration:
+force_x: 2.126346, force_y: 3.532160, force_z: -8.511857,
+moment_x: 0.441039, moment_y: -0.202155, moment_z: -0.085922[0m
+[0m[ INFO] [1634804828.300091633]: before calibration:
+force_x: 201.356171, force_y: -158.561172, force_z: 311.112915,
+moment_x: 8.116069, moment_y: -6.345915, moment_z: -13.007128[0m
+[0m[ INFO] [1634804828.300159027]: get joint state: 2.448065 | -1.748092 | 0.455774 | -2.693644| -1.716292 |0.532291[0m
+[0m[ INFO] [1634804828.300218566]: after calibration:
+force_x: 2.067041, force_y: 3.567351, force_z: -8.598435,
+moment_x: 0.441977, moment_y: -0.200277, moment_z: -0.083418[0m
+[0m[ INFO] [1634804829.299992479]: before calibration:
+force_x: 201.396378, force_y: -158.574478, force_z: 311.199829,
+moment_x: 8.113039, moment_y: -6.351286, moment_z: -13.007917[0m
+[0m[ INFO] [1634804829.300055282]: get joint state: 2.448089 | -1.748116 | 0.455786 | -2.693620| -1.716316 |0.532339[0m
+[0m[ INFO] [1634804829.300114341]: after calibration:
+force_x: 2.107229, force_y: 3.554020, force_z: -8.511645,
+moment_x: 0.438947, moment_y: -0.205647, moment_z: -0.084208[0m
+[0m[ INFO] [1634804830.300106460]: before calibration:
+force_x: 201.415482, force_y: -158.573395, force_z: 311.111786,
+moment_x: 8.114067, moment_y: -6.349540, moment_z: -13.007944[0m
+[0m[ INFO] [1634804830.300174228]: get joint state: 2.448101 | -1.748103 | 0.455762 | -2.693632| -1.716316 |0.532303[0m
+[0m[ INFO] [1634804830.300233981]: after calibration:
+force_x: 2.126352, force_y: 3.555144, force_z: -8.599501,
+moment_x: 0.439975, moment_y: -0.203901, moment_z: -0.084234[0m
+[0m[ INFO] [1634804831.300112809]: before calibration:
+force_x: 201.346680, force_y: -158.567566, force_z: 311.171478,
+moment_x: 8.115055, moment_y: -6.346501, moment_z: -13.007538[0m
+[0m[ INFO] [1634804831.300180543]: get joint state: 2.448065 | -1.748068 | 0.455774 | -2.693656| -1.716292 |0.532339[0m
+[0m[ INFO] [1634804831.300238815]: after calibration:
+force_x: 2.057551, force_y: 3.560936, force_z: -8.539964,
+moment_x: 0.440963, moment_y: -0.200862, moment_z: -0.083828[0m
+[0m[ INFO] [1634804832.299875341]: before calibration:
+force_x: 201.366547, force_y: -158.545181, force_z: 311.200897,
+moment_x: 8.116039, moment_y: -6.349458, moment_z: -13.005828[0m
+[0m[ INFO] [1634804832.299899873]: get joint state: 2.448089 | -1.748103 | 0.455750 | -2.693656| -1.716292 |0.532291[0m
+[0m[ INFO] [1634804832.299925118]: after calibration:
+force_x: 2.077455, force_y: 3.583426, force_z: -8.510066,
+moment_x: 0.441948, moment_y: -0.203820, moment_z: -0.082118[0m
+[0m[ INFO] [1634804833.300105080]: before calibration:
+force_x: 201.415298, force_y: -158.538895, force_z: 311.112762,
+moment_x: 8.116068, moment_y: -6.349547, moment_z: -13.006668[0m
+[0m[ INFO] [1634804833.300173643]: get joint state: 2.448053 | -1.748080 | 0.455798 | -2.693620| -1.716292 |0.532351[0m
+[0m[ INFO] [1634804833.300231399]: after calibration:
+force_x: 2.126154, force_y: 3.589520, force_z: -8.599067,
+moment_x: 0.441975, moment_y: -0.203908, moment_z: -0.082958[0m
+[0m[ INFO] [1634804834.300120425]: before calibration:
+force_x: 201.434647, force_y: -158.538635, force_z: 311.141785,
+moment_x: 8.120153, moment_y: -6.350734, moment_z: -13.006642[0m
+[0m[ INFO] [1634804834.300183221]: get joint state: 2.448053 | -1.748080 | 0.455786 | -2.693608| -1.716304 |0.532303[0m
+[0m[ INFO] [1634804834.300237025]: after calibration:
+force_x: 2.145472, force_y: 3.589781, force_z: -8.570061,
+moment_x: 0.446061, moment_y: -0.205095, moment_z: -0.082932[0m
+[0m[ INFO] [1634804835.300001189]: before calibration:
+force_x: 201.386215, force_y: -158.567719, force_z: 311.141296,
+moment_x: 8.111989, moment_y: -6.347135, moment_z: -13.006309[0m
+[0m[ INFO] [1634804835.300069779]: get joint state: 2.448065 | -1.748068 | 0.455786 | -2.693608| -1.716292 |0.532315[0m
+[0m[ INFO] [1634804835.300134803]: after calibration:
+force_x: 2.097092, force_y: 3.560670, force_z: -8.570629,
+moment_x: 0.437895, moment_y: -0.201496, moment_z: -0.082599[0m
+[0m[ INFO] [1634804836.299886733]: before calibration:
+force_x: 201.385620, force_y: -158.532928, force_z: 311.201294,
+moment_x: 8.118093, moment_y: -6.345982, moment_z: -13.006272[0m
+[0m[ INFO] [1634804836.299933779]: get joint state: 2.448053 | -1.748103 | 0.455739 | -2.693632| -1.716304 |0.532303[0m
+[0m[ INFO] [1634804836.299959016]: after calibration:
+force_x: 2.096437, force_y: 3.595668, force_z: -8.509785,
+moment_x: 0.444002, moment_y: -0.200344, moment_z: -0.082562[0m
+[0m[ INFO] [1634804837.299984872]: before calibration:
+force_x: 201.386734, force_y: -158.580414, force_z: 311.258118,
+moment_x: 8.114044, moment_y: -6.351837, moment_z: -13.007077[0m
+[0m[ INFO] [1634804837.300048367]: get joint state: 2.448077 | -1.748092 | 0.455810 | -2.693656| -1.716316 |0.532303[0m
+[0m[ INFO] [1634804837.300106521]: after calibration:
+force_x: 2.097567, force_y: 3.548065, force_z: -8.453452,
+moment_x: 0.439951, moment_y: -0.206198, moment_z: -0.083367[0m
+[0m[ INFO] [1634804838.300130368]: before calibration:
+force_x: 201.405487, force_y: -158.533600, force_z: 311.201263,
+moment_x: 8.118116, moment_y: -6.349557, moment_z: -13.007479[0m
+[0m[ INFO] [1634804838.300198929]: get joint state: 2.448053 | -1.748092 | 0.455750 | -2.693620| -1.716304 |0.532315[0m
+[0m[ INFO] [1634804838.300275512]: after calibration:
+force_x: 2.116307, force_y: 3.594929, force_z: -8.510103,
+moment_x: 0.444025, moment_y: -0.203919, moment_z: -0.083769[0m
+[0m[ INFO] [1634804839.300145253]: before calibration:
+force_x: 201.326752, force_y: -158.611816, force_z: 311.111725,
+moment_x: 8.107940, moment_y: -6.335290, moment_z: -13.007313[0m
+[0m[ INFO] [1634804839.300219830]: get joint state: 2.448089 | -1.748092 | 0.455786 | -2.693644| -1.716280 |0.532327[0m
+[0m[ INFO] [1634804839.300299491]: after calibration:
+force_x: 2.037694, force_y: 3.516676, force_z: -8.599706,
+moment_x: 0.433848, moment_y: -0.189651, moment_z: -0.083603[0m
+[0m[ INFO] [1634804840.300143579]: before calibration:
+force_x: 201.799881, force_y: -158.401611, force_z: 311.286530,
+moment_x: 8.136435, moment_y: -6.395932, moment_z: -13.003127[0m
+[0m[ INFO] [1634804840.300217440]: get joint state: 2.448077 | -1.748044 | 0.455786 | -2.693752| -1.716340 |0.532339[0m
+[0m[ INFO] [1634804840.300304357]: after calibration:
+force_x: 2.510647, force_y: 3.727008, force_z: -8.424493,
+moment_x: 0.462344, moment_y: -0.250294, moment_z: -0.079417[0m
+[0m[ INFO] [1634804841.300133516]: before calibration:
+force_x: 201.622986, force_y: -158.090790, force_z: 309.016632,
+moment_x: 8.140353, moment_y: -6.360546, moment_z: -13.005890[0m
+[0m[ INFO] [1634804841.300200842]: get joint state: 2.448077 | -1.766771 | 0.456061 | -2.686953| -1.628466 |0.532446[0m
+[0m[ INFO] [1634804841.300275685]: after calibration:
+force_x: 2.557033, force_y: 4.054262, force_z: -10.519131,
+moment_x: 0.466807, moment_y: -0.214223, moment_z: -0.082938[0m
+[0m[ INFO] [1634804842.300086096]: before calibration:
+force_x: 194.647873, force_y: -153.280762, force_z: 319.288513,
+moment_x: 8.834917, moment_y: -5.717870, moment_z: -12.956331[0m
+[0m[ INFO] [1634804842.300153660]: get joint state: 2.448041 | -1.731247 | 0.456481 | -2.242797| -1.390036 |0.532446[0m
+[0m[ INFO] [1634804842.300229220]: after calibration:
+force_x: -3.783311, force_y: 8.222394, force_z: -5.049259,
+moment_x: 1.147097, moment_y: 0.432858, moment_z: -0.035855[0m
+[0m[ INFO] [1634804843.300151435]: before calibration:
+force_x: 195.359833, force_y: -155.665100, force_z: 322.287872,
+moment_x: 8.420963, moment_y: -5.840873, moment_z: -12.943127[0m
+[0m[ INFO] [1634804843.300224221]: get joint state: 2.448101 | -1.599650 | 0.456553 | -2.243013| -1.389532 |0.532446[0m
+[0m[ INFO] [1634804843.300307573]: after calibration:
+force_x: -3.065796, force_y: 5.737442, force_z: -3.554357,
+moment_x: 0.728327, moment_y: 0.310573, moment_z: -0.022717[0m
+[0m[ INFO] [1634804844.300158406]: before calibration:
+force_x: 195.139984, force_y: -153.856461, force_z: 325.497437,
+moment_x: 8.604762, moment_y: -5.825477, moment_z: -12.950226[0m
+[0m[ INFO] [1634804844.300231963]: get joint state: 2.448089 | -1.467808 | 0.456601 | -2.242328| -1.389569 |0.532470[0m
+[0m[ INFO] [1634804844.300440216]: after calibration:
+force_x: -3.283329, force_y: 7.486953, force_z: -1.912472,
+moment_x: 0.906950, moment_y: 0.326705, moment_z: -0.029851[0m
+[0m[ INFO] [1634804845.300147200]: before calibration:
+force_x: 195.479156, force_y: -154.118240, force_z: 329.545319,
+moment_x: 8.607457, moment_y: -5.863638, moment_z: -12.913304[0m
+[0m[ INFO] [1634804845.300214469]: get joint state: 2.448077 | -1.414208 | 0.456757 | -2.042434| -1.389844 |0.532494[0m
+[0m[ INFO] [1634804845.300288165]: after calibration:
+force_x: -2.945264, force_y: 7.234486, force_z: -0.906086,
+moment_x: 0.899178, moment_y: 0.289950, moment_z: 0.007079[0m
+[0m[ INFO] [1634804846.300165999]: before calibration:
+force_x: 196.474426, force_y: -154.597076, force_z: 329.426544,
+moment_x: 8.543914, moment_y: -5.961940, moment_z: -12.924983[0m
+[0m[ INFO] [1634804846.300233507]: get joint state: 2.448136 | -1.410337 | 0.456757 | -2.042423| -1.389844 |0.532410[0m
+[0m[ INFO] [1634804846.300293316]: after calibration:
+force_x: -1.949905, force_y: 6.757082, force_z: -1.071070,
+moment_x: 0.835471, moment_y: 0.191670, moment_z: -0.004600[0m
+[0m[ INFO] [1634804847.300107711]: before calibration:
+force_x: 196.878830, force_y: -154.584061, force_z: 329.157501,
+moment_x: 8.543035, moment_y: -5.999559, moment_z: -12.927133[0m
+[0m[ INFO] [1634804847.300175244]: get joint state: 2.448041 | -1.410373 | 0.456709 | -2.042374| -1.389832 |0.532398[0m
+[0m[ INFO] [1634804847.300232994]: after calibration:
+force_x: -1.545707, force_y: 6.770038, force_z: -1.339684,
+moment_x: 0.834593, moment_y: 0.154050, moment_z: -0.006748[0m
+[0m[ INFO] [1634804848.300132652]: before calibration:
+force_x: 196.811310, force_y: -155.357758, force_z: 328.598083,
+moment_x: 8.450367, moment_y: -6.018004, moment_z: -12.916208[0m
+[0m[ INFO] [1634804848.300209470]: get joint state: 2.448065 | -1.410385 | 0.456625 | -2.042086| -1.389880 |0.532446[0m
+[0m[ INFO] [1634804848.300274999]: after calibration:
+force_x: -1.613290, force_y: 5.996397, force_z: -1.901409,
+moment_x: 0.741918, moment_y: 0.135606, moment_z: 0.004176[0m
+[0m[ INFO] [1634804849.300166844]: before calibration:
+force_x: 196.425232, force_y: -154.613449, force_z: 329.192963,
+moment_x: 8.533752, moment_y: -5.956046, moment_z: -12.927590[0m
+[0m[ INFO] [1634804849.300239866]: get joint state: 2.448101 | -1.410385 | 0.456661 | -2.042506| -1.389856 |0.532422[0m
+[0m[ INFO] [1634804849.300303404]: after calibration:
+force_x: -1.999213, force_y: 6.740600, force_z: -1.301949,
+moment_x: 0.825320, moment_y: 0.197563, moment_z: -0.007207[0m
+[0m[ INFO] [1634804850.300173164]: before calibration:
+force_x: 198.706268, force_y: -157.554047, force_z: 329.865723,
+moment_x: 8.243155, moment_y: -6.189266, moment_z: -12.929324[0m
+[0m[ INFO] [1634804850.300247787]: get joint state: 2.448304 | -1.380818 | 0.457128 | -2.025286| -1.386277 |0.532386[0m
+[0m[ INFO] [1634804850.300311280]: after calibration:
+force_x: 0.290434, force_y: 3.822121, force_z: -1.187740,
+moment_x: 0.532731, moment_y: -0.035369, moment_z: -0.008960[0m
+[0m[ INFO] [1634804851.300162634]: before calibration:
+force_x: 200.610626, force_y: -157.308640, force_z: 338.246979,
+moment_x: 8.294121, moment_y: -6.343029, moment_z: -12.895594[0m
+[0m[ INFO] [1634804851.300230951]: get joint state: 2.449011 | -1.311429 | 0.457416 | -1.623908| -1.334899 |0.532422[0m
+[0m[ INFO] [1634804851.300288536]: after calibration:
+force_x: 2.303613, force_y: 4.582242, force_z: 2.172073,
+moment_x: 0.564701, moment_y: -0.186429, moment_z: 0.024636[0m
+[0m[ INFO] [1634804852.300158246]: before calibration:
+force_x: 203.443298, force_y: -157.221146, force_z: 342.425812,
+moment_x: 8.362266, moment_y: -6.629519, moment_z: -12.898962[0m
+[0m[ INFO] [1634804852.300226294]: get joint state: 2.448987 | -1.170269 | 0.457428 | -1.620632| -1.335678 |0.532410[0m
+[0m[ INFO] [1634804852.300285488]: after calibration:
+force_x: 5.124172, force_y: 4.910285, force_z: 5.077805,
+moment_x: 0.627653, moment_y: -0.472369, moment_z: 0.021421[0m
+[0m[ INFO] [1634804853.300080370]: before calibration:
+force_x: 204.140198, force_y: -160.554718, force_z: 343.520050,
+moment_x: 8.081677, moment_y: -6.672049, moment_z: -12.901139[0m
+[0m[ INFO] [1634804853.300209733]: get joint state: 2.448987 | -1.060807 | 0.457511 | -1.619960| -1.335654 |0.532398[0m
+[0m[ INFO] [1634804853.300272282]: after calibration:
+force_x: 5.812362, force_y: 1.784999, force_z: 5.320868,
+moment_x: 0.343429, moment_y: -0.514534, moment_z: 0.019370[0m
+[0m[ INFO] [1634804854.300178229]: before calibration:
+force_x: 203.136093, force_y: -160.125519, force_z: 341.940521,
+moment_x: 8.086269, moment_y: -6.572783, moment_z: -12.901011[0m
+[0m[ INFO] [1634804854.300250435]: get joint state: 2.448951 | -1.054205 | 0.457452 | -1.620032| -1.335666 |0.532375[0m
+[0m[ INFO] [1634804854.300326198]: after calibration:
+force_x: 4.807635, force_y: 2.226990, force_z: 3.694815,
+moment_x: 0.347818, moment_y: -0.415249, moment_z: 0.019506[0m
+[0m[ INFO] [1634804855.300181814]: before calibration:
+force_x: 203.463150, force_y: -160.080704, force_z: 342.025238,
+moment_x: 8.080235, moment_y: -6.605093, moment_z: -12.901935[0m
+[0m[ INFO] [1634804855.300255500]: get joint state: 2.449023 | -1.054229 | 0.457440 | -1.620079| -1.335678 |0.532339[0m
+[0m[ INFO] [1634804855.300320097]: after calibration:
+force_x: 5.134776, force_y: 2.271681, force_z: 3.780101,
+moment_x: 0.341786, moment_y: -0.447558, moment_z: 0.018582[0m
+[0m[ INFO] [1634804856.300097818]: before calibration:
+force_x: 203.591187, force_y: -160.052643, force_z: 341.906189,
+moment_x: 8.081218, moment_y: -6.616382, moment_z: -12.898499[0m
+[0m[ INFO] [1634804856.300173104]: get joint state: 2.448975 | -1.054242 | 0.457440 | -1.620056| -1.335702 |0.532386[0m
+[0m[ INFO] [1634804856.300238189]: after calibration:
+force_x: 5.262681, force_y: 2.299722, force_z: 3.660914,
+moment_x: 0.342768, moment_y: -0.458848, moment_z: 0.022018[0m
+[0m[ INFO] [1634804857.300177711]: before calibration:
+force_x: 204.073257, force_y: -159.870392, force_z: 342.024414,
+moment_x: 8.104832, moment_y: -6.666098, moment_z: -12.905267[0m
+[0m[ INFO] [1634804857.300243271]: get joint state: 2.449717 | -1.054205 | 0.457404 | -1.620067| -1.335869 |0.532351[0m
+[0m[ INFO] [1634804857.300302328]: after calibration:
+force_x: 5.745431, force_y: 2.482361, force_z: 3.778845,
+moment_x: 0.366379, moment_y: -0.508562, moment_z: 0.015249[0m
+[0m[ INFO] [1634804858.300163911]: before calibration:
+force_x: 204.032288, force_y: -159.868973, force_z: 342.173767,
+moment_x: 8.117191, moment_y: -6.657936, moment_z: -12.912764[0m
+[0m[ INFO] [1634804858.300232432]: get joint state: 2.630471 | -1.054409 | 0.457368 | -1.620200| -1.336084 |0.532327[0m
+[0m[ INFO] [1634804858.300288372]: after calibration:
+force_x: 5.958058, force_y: 2.625431, force_z: 3.930376,
+moment_x: 0.378261, moment_y: -0.499530, moment_z: 0.006948[0m
+[0m[ INFO] [1634804859.300171070]: before calibration:
+force_x: 203.144409, force_y: -160.739899, force_z: 341.860626,
+moment_x: 8.014303, moment_y: -6.579006, moment_z: -12.909521[0m
+[0m[ INFO] [1634804859.300239684]: get joint state: 2.835586 | -1.054421 | 0.457344 | -1.620248| -1.336025 |0.532375[0m
+[0m[ INFO] [1634804859.300298682]: after calibration:
+force_x: 5.322265, force_y: 1.968334, force_z: 3.617964,
+moment_x: 0.274642, moment_y: -0.419736, moment_z: 0.009424[0m
+[0m[ INFO] [1634804860.300001565]: before calibration:
+force_x: 203.562286, force_y: -160.951035, force_z: 340.057922,
+moment_x: 8.031801, moment_y: -6.611254, moment_z: -12.906952[0m
+[0m[ INFO] [1634804860.300069717]: get joint state: 3.004636 | -1.050156 | 0.457440 | -1.617043| -1.335726 |0.532422[0m
+[0m[ INFO] [1634804860.300126320]: after calibration:
+force_x: 5.903506, force_y: 1.982147, force_z: 1.762031,
+moment_x: 0.291185, moment_y: -0.451398, moment_z: 0.011538[0m
+[0m[ INFO] [1634804861.300161997]: before calibration:
+force_x: 203.980133, force_y: -164.603516, force_z: 343.159210,
+moment_x: 7.662142, moment_y: -6.644377, moment_z: -12.883891[0m
+[0m[ INFO] [1634804861.300234516]: get joint state: 3.110246 | -0.968464 | 0.457476 | -1.458520| -1.335259 |0.532470[0m
+[0m[ INFO] [1634804861.300384916]: after calibration:
+force_x: 6.073594, force_y: -1.129197, force_z: 3.451675,
+moment_x: -0.085175, moment_y: -0.484716, moment_z: 0.035700[0m
+[0m[ INFO] [1634804862.300009015]: before calibration:
+force_x: 207.307632, force_y: -165.341553, force_z: 343.989044,
+moment_x: 7.613585, moment_y: -6.940713, moment_z: -12.889307[0m
+[0m[ INFO] [1634804862.300078431]: get joint state: 3.119350 | -0.870284 | 0.457727 | -1.458196| -1.335474 |0.532422[0m
+[0m[ INFO] [1634804862.300136595]: after calibration:
+force_x: 9.252904, force_y: -1.682992, force_z: 3.879299,
+moment_x: -0.135744, moment_y: -0.781374, moment_z: 0.030877[0m
+[0m[ INFO] [1634804863.300174413]: before calibration:
+force_x: 207.530060, force_y: -165.513580, force_z: 344.975159,
+moment_x: 7.601499, moment_y: -6.970390, moment_z: -12.889531[0m
+[0m[ INFO] [1634804863.300244611]: get joint state: 3.120523 | -0.861193 | 0.457788 | -1.458136| -1.335546 |0.532422[0m
+[0m[ INFO] [1634804863.300301547]: after calibration:
+force_x: 9.461035, force_y: -1.837463, force_z: 4.833344,
+moment_x: -0.148000, moment_y: -0.811086, moment_z: 0.030710[0m
+[0m[ INFO] [1634804864.300172403]: before calibration:
+force_x: 207.417999, force_y: -165.365662, force_z: 344.953766,
+moment_x: 7.631003, moment_y: -6.960315, moment_z: -12.891485[0m
+[0m[ INFO] [1634804864.300240821]: get joint state: 3.120547 | -0.861217 | 0.457835 | -1.458208| -1.335510 |0.532410[0m
+[0m[ INFO] [1634804864.300299879]: after calibration:
+force_x: 9.349117, force_y: -1.689547, force_z: 4.812214,
+moment_x: -0.118495, moment_y: -0.801011, moment_z: 0.028756[0m
+[0m[ INFO] [1634804865.300190397]: before calibration:
+force_x: 207.442871, force_y: -165.543564, force_z: 345.033844,
+moment_x: 7.589243, moment_y: -6.965588, moment_z: -12.889214[0m
+[0m[ INFO] [1634804865.300266572]: get joint state: 3.120559 | -0.861204 | 0.457847 | -1.458172| -1.335558 |0.532363[0m
+[0m[ INFO] [1634804865.300329690]: after calibration:
+force_x: 9.373812, force_y: -1.867413, force_z: 4.891955,
+moment_x: -0.160256, moment_y: -0.806284, moment_z: 0.031029[0m
+[0m[ INFO] [1634804866.300191641]: before calibration:
+force_x: 207.490479, force_y: -165.411102, force_z: 344.891907,
+moment_x: 7.602469, moment_y: -6.972224, moment_z: -12.890671[0m
+[0m[ INFO] [1634804866.300267636]: get joint state: 3.120523 | -0.861217 | 0.457835 | -1.458196| -1.335486 |0.532410[0m
+[0m[ INFO] [1634804866.300331276]: after calibration:
+force_x: 9.421617, force_y: -1.734945, force_z: 4.750379,
+moment_x: -0.147028, moment_y: -0.812919, moment_z: 0.029571[0m
+[0m[ INFO] [1634804867.300190647]: before calibration:
+force_x: 207.695816, force_y: -165.314758, force_z: 344.776520,
+moment_x: 7.618881, moment_y: -6.992617, moment_z: -12.895748[0m
+[0m[ INFO] [1634804867.300266288]: get joint state: 3.120619 | -0.861204 | 0.457739 | -1.458160| -1.335414 |0.532375[0m
+[0m[ INFO] [1634804867.300329779]: after calibration:
+force_x: 9.627170, force_y: -1.638473, force_z: 4.635349,
+moment_x: -0.130616, moment_y: -0.833311, moment_z: 0.024492[0m
+[0m[ INFO] [1634804868.300191919]: before calibration:
+force_x: 209.599915, force_y: -163.749512, force_z: 348.165344,
+moment_x: 7.694321, moment_y: -7.162775, moment_z: -12.964320[0m
+[0m[ INFO] [1634804868.300268254]: get joint state: 3.227857 | -0.861612 | 0.457188 | -1.458880| -1.165995 |0.532470[0m
+[0m[ INFO] [1634804868.300334362]: after calibration:
+force_x: 11.796370, force_y: 0.350997, force_z: 8.653141,
+moment_x: -0.054474, moment_y: -1.002852, moment_z: -0.044792[0m
+[0m[ INFO] [1634804869.300191104]: before calibration:
+force_x: 217.122864, force_y: -158.499954, force_z: 335.263794,
+moment_x: 8.190286, moment_y: -7.844835, moment_z: -12.959089[0m
+[0m[ INFO] [1634804869.300266183]: get joint state: 3.229663 | -0.863588 | 0.456721 | -1.459600| -0.638517 |0.532518[0m
+[0m[ INFO] [1634804869.300331501]: after calibration:
+force_x: 19.859896, force_y: 6.529772, force_z: -0.458932,
+moment_x: 0.451305, moment_y: -1.684816, moment_z: -0.040985[0m
+[0m[ INFO] [1634804870.300160002]: before calibration:
+force_x: 215.411377, force_y: -160.359711, force_z: 340.803406,
+moment_x: 7.942915, moment_y: -7.632952, moment_z: -13.012005[0m
+[0m[ INFO] [1634804870.300234653]: get joint state: 3.229568 | -0.863181 | 0.456912 | -1.459180| -0.621713 |0.532470[0m
+[0m[ INFO] [1634804870.300304091]: after calibration:
+force_x: 18.157282, force_y: 4.696312, force_z: 5.237338,
+moment_x: 0.204381, moment_y: -1.472974, moment_z: -0.093919[0m
+[0m[ INFO] [1634804871.300221110]: before calibration:
+force_x: 218.921448, force_y: -157.926727, force_z: 339.334381,
+moment_x: 8.260197, moment_y: -8.096663, moment_z: -12.981750[0m
+[0m[ INFO] [1634804871.300297410]: get joint state: 3.229591 | -0.863324 | 0.456900 | -1.459264| -0.621677 |0.532446[0m
+[0m[ INFO] [1634804871.300362193]: after calibration:
+force_x: 21.667593, force_y: 7.129158, force_z: 3.769149,
+moment_x: 0.521666, moment_y: -1.936685, moment_z: -0.063664[0m
+[0m[ INFO] [1634804872.299989177]: before calibration:
+force_x: 216.967651, force_y: -158.433838, force_z: 332.033264,
+moment_x: 8.246499, moment_y: -7.791290, moment_z: -12.910712[0m
+[0m[ INFO] [1634804872.300055959]: get joint state: 3.229579 | -0.863324 | 0.456900 | -1.459408| -0.621737 |0.532482[0m
+[0m[ INFO] [1634804872.300116587]: after calibration:
+force_x: 19.713928, force_y: 6.621798, force_z: -3.532237,
+moment_x: 0.507968, moment_y: -1.631312, moment_z: 0.007372[0m
+[0m[ INFO] [1634804873.300065908]: before calibration:
+force_x: 215.423218, force_y: -160.219666, force_z: 339.984497,
+moment_x: 7.999724, moment_y: -7.634815, moment_z: -12.998878[0m
+[0m[ INFO] [1634804873.300133856]: get joint state: 3.229627 | -0.863289 | 0.456948 | -1.459324| -0.621701 |0.532446[0m
+[0m[ INFO] [1634804873.300197478]: after calibration:
+force_x: 18.169281, force_y: 4.836269, force_z: 4.418989,
+moment_x: 0.261193, moment_y: -1.474837, moment_z: -0.080792[0m
+[0m[ INFO] [1634804874.300168646]: before calibration:
+force_x: 214.910645, force_y: -158.782211, force_z: 339.441254,
+moment_x: 8.204658, moment_y: -7.636213, moment_z: -12.929832[0m
+[0m[ INFO] [1634804874.300237458]: get joint state: 3.298388 | -0.887749 | 0.456133 | -1.459803| -0.723841 |0.532590[0m
+[0m[ INFO] [1634804874.300297834]: after calibration:
+force_x: 17.544304, force_y: 6.199703, force_z: 3.004933,
+moment_x: 0.463393, moment_y: -1.476217, moment_z: -0.011395[0m
+[0m[ INFO] [1634804875.300181618]: before calibration:
+force_x: 214.386276, force_y: -158.255508, force_z: 336.948914,
+moment_x: 8.250095, moment_y: -7.610242, moment_z: -12.930448[0m
+[0m[ INFO] [1634804875.300248117]: get joint state: 3.443108 | -0.983906 | 0.455487 | -1.462623| -0.723877 |0.532626[0m
+[0m[ INFO] [1634804875.300307075]: after calibration:
+force_x: 16.971598, force_y: 6.867834, force_z: 0.804152,
+moment_x: 0.509346, moment_y: -1.450547, moment_z: -0.011780[0m
+[0m[ INFO] [1634804876.300179499]: before calibration:
+force_x: 209.535614, force_y: -156.149109, force_z: 341.641815,
+moment_x: 8.542136, moment_y: -7.171721, moment_z: -12.910480[0m
+[0m[ INFO] [1634804876.300248209]: get joint state: 3.518840 | -1.150307 | 0.455008 | -1.496070| -1.039771 |0.532865[0m
+[0m[ INFO] [1634804876.300308972]: after calibration:
+force_x: 12.273589, force_y: 8.269841, force_z: 4.313208,
+moment_x: 0.799741, moment_y: -1.010953, moment_z: 0.007337[0m
+[0m[ INFO] [1634804877.299957775]: before calibration:
+force_x: 196.852676, force_y: -152.524506, force_z: 331.155426,
+moment_x: 8.690825, moment_y: -5.971612, moment_z: -12.978397[0m
+[0m[ INFO] [1634804877.300030494]: get joint state: 3.520252 | -1.175529 | 0.455091 | -2.106395| -1.100274 |0.532734[0m
+[0m[ INFO] [1634804877.300094656]: after calibration:
+force_x: 0.324910, force_y: 11.383555, force_z: -0.970936,
+moment_x: 0.968032, moment_y: 0.189261, moment_z: -0.063336[0m
+[0m[ INFO] [1634804878.300019787]: before calibration:
+force_x: 199.044342, force_y: -153.823364, force_z: 333.472931,
+moment_x: 8.577827, moment_y: -6.264203, moment_z: -12.981216[0m
+[0m[ INFO] [1634804878.300185162]: get joint state: 3.520252 | -1.185439 | 0.455583 | -2.158818| -1.181400 |0.532602[0m
+[0m[ INFO] [1634804878.300296815]: after calibration:
+force_x: 2.543850, force_y: 9.860873, force_z: 1.889914,
+moment_x: 0.857666, moment_y: -0.103488, moment_z: -0.066353[0m
+[0m[ INFO] [1634804879.300097705]: before calibration:
+force_x: 196.547134, force_y: -154.760620, force_z: 334.650818,
+moment_x: 8.495066, moment_y: -5.910551, moment_z: -12.977005[0m
+[0m[ INFO] [1634804879.300172554]: get joint state: 3.520240 | -1.185558 | 0.455534 | -2.158950| -1.181352 |0.532698[0m
+[0m[ INFO] [1634804879.300235778]: after calibration:
+force_x: 0.046809, force_y: 8.923630, force_z: 3.071135,
+moment_x: 0.774916, moment_y: 0.250163, moment_z: -0.062141[0m
+[0m[ INFO] [1634804880.300178499]: before calibration:
+force_x: 196.994995, force_y: -154.733536, force_z: 335.485626,
+moment_x: 8.474048, moment_y: -5.963546, moment_z: -13.053609[0m
+[0m[ INFO] [1634804880.300247978]: get joint state: 3.520240 | -1.185630 | 0.455511 | -2.158962| -1.181376 |0.532554[0m
+[0m[ INFO] [1634804880.300310426]: after calibration:
+force_x: 0.494722, force_y: 8.950625, force_z: 3.907096,
+moment_x: 0.753902, moment_y: 0.197167, moment_z: -0.138746[0m
+[0m[ INFO] [1634804881.300181802]: before calibration:
+force_x: 199.040497, force_y: -152.725220, force_z: 330.554810,
+moment_x: 8.691449, moment_y: -6.237515, moment_z: -12.978024[0m
+[0m[ INFO] [1634804881.300251414]: get joint state: 3.520192 | -1.185630 | 0.455534 | -2.158938| -1.181352 |0.532698[0m
+[0m[ INFO] [1634804881.300310005]: after calibration:
+force_x: 2.540197, force_y: 10.958895, force_z: -1.024215,
+moment_x: 0.971302, moment_y: -0.076802, moment_z: -0.063161[0m
+[0m[ INFO] [1634804882.300109812]: before calibration:
+force_x: 197.147156, force_y: -153.654297, force_z: 328.716827,
+moment_x: 8.600594, moment_y: -6.022271, moment_z: -12.916128[0m
+[0m[ INFO] [1634804882.300178608]: get joint state: 3.520240 | -1.185666 | 0.455511 | -2.158938| -1.181340 |0.532698[0m
+[0m[ INFO] [1634804882.300242932]: after calibration:
+force_x: 0.646897, force_y: 10.029953, force_z: -2.861531,
+moment_x: 0.880448, moment_y: 0.138443, moment_z: -0.001266[0m
+[0m[ INFO] [1634804883.300176668]: before calibration:
+force_x: 196.953232, force_y: -153.919357, force_z: 329.326538,
+moment_x: 8.572198, moment_y: -5.990258, moment_z: -12.919620[0m
+[0m[ INFO] [1634804883.300245757]: get joint state: 3.520252 | -1.185630 | 0.455499 | -2.158914| -1.181340 |0.532698[0m
+[0m[ INFO] [1634804883.300303256]: after calibration:
+force_x: 0.452949, force_y: 9.764935, force_z: -2.252342,
+moment_x: 0.852050, moment_y: 0.170455, moment_z: -0.004756[0m
+[0m[ INFO] [1634804884.300177472]: before calibration:
+force_x: 197.562775, force_y: -153.540131, force_z: 329.159058,
+moment_x: 8.607093, moment_y: -6.069246, moment_z: -12.935027[0m
+[0m[ INFO] [1634804884.300245923]: get joint state: 3.520192 | -1.185618 | 0.455499 | -2.158938| -1.181340 |0.532674[0m
+[0m[ INFO] [1634804884.300305232]: after calibration:
+force_x: 1.062490, force_y: 10.144009, force_z: -2.419698,
+moment_x: 0.886946, moment_y: 0.091467, moment_z: -0.020164[0m
+[0m[ INFO] [1634804885.300136761]: before calibration:
+force_x: 201.937439, force_y: -155.577347, force_z: 336.712433,
+moment_x: 8.415189, moment_y: -6.496329, moment_z: -12.909507[0m
+[0m[ INFO] [1634804885.300206193]: get joint state: 3.529502 | -1.181640 | 0.456457 | -1.876770| -1.180801 |0.532386[0m
+[0m[ INFO] [1634804885.300264374]: after calibration:
+force_x: 5.202852, force_y: 8.244613, force_z: 2.149779,
+moment_x: 0.684331, moment_y: -0.335035, moment_z: 0.006224[0m
+[0m[ INFO] [1634804886.300098634]: before calibration:
+force_x: 202.529282, force_y: -157.863297, force_z: 340.191833,
+moment_x: 8.308421, moment_y: -6.487139, moment_z: -12.905368[0m
+[0m[ INFO] [1634804886.300165904]: get joint state: 3.663676 | -1.108551 | 0.456733 | -1.662599| -1.181065 |0.532410[0m
+[0m[ INFO] [1634804886.300228022]: after calibration:
+force_x: 5.367296, force_y: 6.391773, force_z: 3.116055,
+moment_x: 0.567456, moment_y: -0.326146, moment_z: 0.012031[0m
+[0m[ INFO] [1634804887.300176562]: before calibration:
+force_x: 206.025620, force_y: -160.722687, force_z: 341.461884,
+moment_x: 7.956823, moment_y: -6.852883, moment_z: -12.901385[0m
+[0m[ INFO] [1634804887.300246239]: get joint state: 3.742270 | -0.960797 | 0.456960 | -1.661399| -1.181041 |0.532434[0m
+[0m[ INFO] [1634804887.300304546]: after calibration:
+force_x: 8.554971, force_y: 3.739032, force_z: 3.340906,
+moment_x: 0.211562, moment_y: -0.692464, moment_z: 0.017168[0m
+[0m[ INFO] [1634804888.300073944]: before calibration:
+force_x: 208.174255, force_y: -160.859131, force_z: 343.619446,
+moment_x: 7.976816, moment_y: -7.051556, moment_z: -12.896548[0m
+[0m[ INFO] [1634804888.300142890]: get joint state: 3.761623 | -0.807699 | 0.457056 | -1.661327| -1.181436 |0.532434[0m
+[0m[ INFO] [1634804888.300201088]: after calibration:
+force_x: 10.383183, force_y: 3.698433, force_z: 4.639828,
+moment_x: 0.228281, moment_y: -0.891838, moment_z: 0.023149[0m
+[0m[ INFO] [1634804889.300176942]: before calibration:
+force_x: 211.479156, force_y: -166.330917, force_z: 344.211517,
+moment_x: 7.483939, moment_y: -7.401772, moment_z: -12.909230[0m
+[0m[ INFO] [1634804889.300244029]: get joint state: 3.761599 | -0.657126 | 0.457200 | -1.652277| -1.195547 |0.532542[0m
+[0m[ INFO] [1634804889.300303009]: after calibration:
+force_x: 13.339143, force_y: -1.731094, force_z: 4.532067,
+moment_x: -0.267142, moment_y: -1.242926, moment_z: 0.011683[0m
+[0m[ INFO] [1634804890.300192854]: before calibration:
+force_x: 207.830078, force_y: -174.904083, force_z: 346.741821,
+moment_x: 6.756990, moment_y: -6.946239, moment_z: -12.844012[0m
+[0m[ INFO] [1634804890.300267676]: get joint state: 3.761599 | -0.619102 | 0.457272 | -1.349450| -1.577163 |0.532482[0m
+[0m[ INFO] [1634804890.300331671]: after calibration:
+force_x: 8.690385, force_y: -11.062260, force_z: 5.786274,
+moment_x: -0.995869, moment_y: -0.790231, moment_z: 0.079980[0m
+[0m[ INFO] [1634804891.300191924]: before calibration:
+force_x: 207.160461, force_y: -174.346832, force_z: 345.957153,
+moment_x: 6.813903, moment_y: -6.905956, moment_z: -12.861597[0m
+[0m[ INFO] [1634804891.300266265]: get joint state: 3.761527 | -0.614180 | 0.457212 | -1.349485| -1.577198 |0.532458[0m
+[0m[ INFO] [1634804891.300330681]: after calibration:
+force_x: 8.008702, force_y: -10.502440, force_z: 5.005260,
+moment_x: -0.938952, moment_y: -0.749990, moment_z: 0.062438[0m
+[0m[ INFO] [1634804892.300009240]: before calibration:
+force_x: 207.181351, force_y: -174.327133, force_z: 346.192444,
+moment_x: 6.811892, moment_y: -6.911966, moment_z: -12.863583[0m
+[0m[ INFO] [1634804892.300082047]: get joint state: 3.761575 | -0.614228 | 0.457248 | -1.349473| -1.577198 |0.532470[0m
+[0m[ INFO] [1634804892.300165648]: after calibration:
+force_x: 8.029591, force_y: -10.482749, force_z: 5.240551,
+moment_x: -0.940963, moment_y: -0.756001, moment_z: 0.060452[0m
+[0m[ INFO] [1634804893.300198498]: before calibration:
+force_x: 207.190903, force_y: -174.299149, force_z: 346.253082,
+moment_x: 6.815012, moment_y: -6.912680, moment_z: -12.867687[0m
+[0m[ INFO] [1634804893.300273695]: get joint state: 3.761527 | -0.614240 | 0.457176 | -1.349473| -1.577198 |0.532506[0m
+[0m[ INFO] [1634804893.300361736]: after calibration:
+force_x: 8.039353, force_y: -10.454803, force_z: 5.301124,
+moment_x: -0.937844, moment_y: -0.756713, moment_z: 0.056347[0m
+[0m[ INFO] [1634804894.300199461]: before calibration:
+force_x: 205.715607, force_y: -173.723038, force_z: 345.682037,
+moment_x: 6.817317, moment_y: -6.771891, moment_z: -12.864462[0m
+[0m[ INFO] [1634804894.300274433]: get joint state: 3.761623 | -0.614252 | 0.457212 | -1.349522| -1.577151 |0.532446[0m
+[0m[ INFO] [1634804894.300354543]: after calibration:
+force_x: 6.564142, force_y: -9.878602, force_z: 4.730056,
+moment_x: -0.935539, moment_y: -0.615925, moment_z: 0.059572[0m
+[0m[ INFO] [1634804895.300099016]: before calibration:
+force_x: 204.435745, force_y: -165.212189, force_z: 345.985260,
+moment_x: 7.620646, moment_y: -6.678850, moment_z: -12.934595[0m
+[0m[ INFO] [1634804895.300248348]: get joint state: 3.801851 | -0.745081 | 0.455630 | -1.653430| -1.442647 |0.532506[0m
+[0m[ INFO] [1634804895.300357887]: after calibration:
+force_x: 6.414567, force_y: -1.226447, force_z: 5.937692,
+moment_x: -0.129591, moment_y: -0.519425, moment_z: -0.014374[0m
+[0m[ INFO] [1634804896.300187589]: before calibration:
+force_x: 202.110703, force_y: -162.620560, force_z: 343.833099,
+moment_x: 7.831738, moment_y: -6.449892, moment_z: -12.927618[0m
+[0m[ INFO] [1634804896.300262599]: get joint state: 3.820128 | -0.936982 | 0.455559 | -1.653310| -1.442755 |0.532530[0m
+[0m[ INFO] [1634804896.300324947]: after calibration:
+force_x: 4.515174, force_y: 1.314410, force_z: 4.833083,
+moment_x: 0.085268, moment_y: -0.289493, moment_z: -0.008881[0m
+[0m[ INFO] [1634804897.300109395]: before calibration:
+force_x: 199.480438, force_y: -158.261795, force_z: 341.408020,
+moment_x: 8.271758, moment_y: -6.181490, moment_z: -12.944669[0m
+[0m[ INFO] [1634804897.300183056]: get joint state: 3.819793 | -1.074237 | 0.455571 | -1.701269| -1.443546 |0.532566[0m
+[0m[ INFO] [1634804897.300243302]: after calibration:
+force_x: 2.252193, force_y: 5.612194, force_z: 3.775712,
+moment_x: 0.530191, moment_y: -0.020465, moment_z: -0.027220[0m
+[0m[ INFO] [1634804898.300177697]: before calibration:
+force_x: 199.986435, force_y: -156.103821, force_z: 333.682770,
+moment_x: 8.400043, moment_y: -6.347964, moment_z: -12.940013[0m
+[0m[ INFO] [1634804898.300246408]: get joint state: 3.819625 | -1.184144 | 0.455523 | -1.990967| -1.502900 |0.532494[0m
+[0m[ INFO] [1634804898.300302874]: after calibration:
+force_x: 3.327757, force_y: 7.525936, force_z: -0.065758,
+moment_x: 0.672638, moment_y: -0.186787, moment_z: -0.024632[0m
+[0m[ INFO] [1634804899.300194233]: before calibration:
+force_x: 196.868088, force_y: -157.852890, force_z: 327.511047,
+moment_x: 8.247927, moment_y: -5.979751, moment_z: -12.930875[0m
+[0m[ INFO] [1634804899.300268330]: get joint state: 3.819350 | -1.286958 | 0.455523 | -2.126968| -1.708330 |0.532446[0m
+[0m[ INFO] [1634804899.300331656]: after calibration:
+force_x: 0.287955, force_y: 5.232267, force_z: -3.447906,
+moment_x: 0.531962, moment_y: 0.180401, moment_z: -0.016016[0m
+[0m[ INFO] [1634804900.300192476]: before calibration:
+force_x: 196.173721, force_y: -155.066376, force_z: 326.976074,
+moment_x: 8.543712, moment_y: -5.950777, moment_z: -12.907700[0m
+[0m[ INFO] [1634804900.300266347]: get joint state: 3.819303 | -1.373556 | 0.455606 | -2.126439| -2.041422 |0.532506[0m
+[0m[ INFO] [1634804900.300330206]: after calibration:
+force_x: -0.753955, force_y: 7.253914, force_z: -2.834446,
+moment_x: 0.834312, moment_y: 0.207650, moment_z: 0.007998[0m
+[0m[ INFO] [1634804901.300203092]: before calibration:
+force_x: 195.449219, force_y: -155.296585, force_z: 327.801147,
+moment_x: 8.505001, moment_y: -5.887638, moment_z: -12.915159[0m
+[0m[ INFO] [1634804901.300277721]: get joint state: 3.819350 | -1.394122 | 0.455810 | -2.125346| -2.062181 |0.532422[0m
+[0m[ INFO] [1634804901.300341220]: after calibration:
+force_x: -1.506230, force_y: 6.980531, force_z: -1.791092,
+moment_x: 0.796498, moment_y: 0.270592, moment_z: 0.000612[0m
+[0m[ INFO] [1634804902.300196706]: before calibration:
+force_x: 195.467194, force_y: -155.314987, force_z: 327.566345,
+moment_x: 8.492800, moment_y: -5.860673, moment_z: -12.914728[0m
+[0m[ INFO] [1634804902.300271209]: get joint state: 3.819362 | -1.394313 | 0.455739 | -2.125323| -2.062229 |0.532398[0m
+[0m[ INFO] [1634804902.300334492]: after calibration:
+force_x: -1.488269, force_y: 6.962049, force_z: -2.023301,
+moment_x: 0.784306, moment_y: 0.297555, moment_z: 0.001043[0m
+[0m[ INFO] [1634804903.300110100]: before calibration:
+force_x: 195.476624, force_y: -155.162369, force_z: 327.777649,
+moment_x: 8.501946, moment_y: -5.863846, moment_z: -12.917025[0m
+[0m[ INFO] [1634804903.300182889]: get joint state: 3.819350 | -1.394313 | 0.455750 | -2.125274| -2.062169 |0.532458[0m
+[0m[ INFO] [1634804903.300245409]: after calibration:
+force_x: -1.478776, force_y: 7.114766, force_z: -1.812669,
+moment_x: 0.793450, moment_y: 0.294384, moment_z: -0.001253[0m
+[0m[ INFO] [1634804904.300094612]: before calibration:
+force_x: 195.476593, force_y: -155.117264, force_z: 327.867432,
+moment_x: 8.503971, moment_y: -5.863913, moment_z: -12.917393[0m
+[0m[ INFO] [1634804904.300169638]: get joint state: 3.819338 | -1.394313 | 0.455750 | -2.125274| -2.062241 |0.532422[0m
+[0m[ INFO] [1634804904.300232927]: after calibration:
+force_x: -1.478936, force_y: 7.159700, force_z: -1.722854,
+moment_x: 0.795475, moment_y: 0.294316, moment_z: -0.001620[0m
+[0m[ INFO] [1634804905.300190771]: before calibration:
+force_x: 191.975403, force_y: -158.732346, force_z: 329.032074,
+moment_x: 8.124552, moment_y: -5.507613, moment_z: -12.865782[0m
+[0m[ INFO] [1634804905.300265312]: get joint state: 3.816681 | -1.392300 | 0.456241 | -1.942217| -2.109679 |0.532351[0m
+[0m[ INFO] [1634804905.300328465]: after calibration:
+force_x: -5.128291, force_y: 3.455548, force_z: -2.451931,
+moment_x: 0.409864, moment_y: 0.650986, moment_z: 0.050457[0m
+[0m[ INFO] [1634804906.300169407]: before calibration:
+force_x: 191.954056, force_y: -157.912842, force_z: 331.294617,
+moment_x: 8.287597, moment_y: -5.513124, moment_z: -12.880988[0m
+[0m[ INFO] [1634804906.300244298]: get joint state: 3.716873 | -1.392599 | 0.456170 | -1.892305| -2.440900 |0.532506[0m
+[0m[ INFO] [1634804906.300309636]: after calibration:
+force_x: -6.020532, force_y: 3.616149, force_z: 0.115711,
+moment_x: 0.576216, moment_y: 0.642345, moment_z: 0.037933[0m
+[0m[ INFO] [1634804907.300189636]: before calibration:
+force_x: 194.345993, force_y: -157.285797, force_z: 333.165161,
+moment_x: 8.248793, moment_y: -5.771735, moment_z: -12.917462[0m
+[0m[ INFO] [1634804907.300264677]: get joint state: 3.492120 | -1.392743 | 0.456157 | -1.892005| -2.092811 |0.532494[0m
+[0m[ INFO] [1634804907.300327119]: after calibration:
+force_x: -3.369806, force_y: 4.424585, force_z: 1.149298,
+moment_x: 0.533919, moment_y: 0.385011, moment_z: 0.000655[0m
+[0m[ INFO] [1634804908.300177648]: before calibration:
+force_x: 197.726257, force_y: -156.560822, force_z: 330.822723,
+moment_x: 8.321687, moment_y: -6.154458, moment_z: -12.917660[0m
+[0m[ INFO] [1634804908.300246870]: get joint state: 3.260879 | -1.392192 | 0.456277 | -1.881908| -1.751844 |0.532458[0m
+[0m[ INFO] [1634804908.300304641]: after calibration:
+force_x: 0.236037, force_y: 5.347923, force_z: -1.755907,
+moment_x: 0.604201, moment_y: 0.003323, moment_z: -0.000224[0m
+[0m[ INFO] [1634804909.300200347]: before calibration:
+force_x: 199.957230, force_y: -161.460022, force_z: 340.058685,
+moment_x: 7.932669, moment_y: -6.276374, moment_z: -12.879668[0m
+[0m[ INFO] [1634804909.300274653]: get joint state: 3.131279 | -1.385013 | 0.456517 | -1.466366| -1.608292 |0.532530[0m
+[0m[ INFO] [1634804909.300338653]: after calibration:
+force_x: 2.142285, force_y: 0.895098, force_z: 3.008116,
+moment_x: 0.198309, moment_y: -0.117632, moment_z: 0.039089[0m
+[0m[ INFO] [1634804910.300126867]: before calibration:
+force_x: 201.602936, force_y: -167.381226, force_z: 341.997162,
+moment_x: 7.429681, moment_y: -6.403903, moment_z: -12.846361[0m
+[0m[ INFO] [1634804910.300200505]: get joint state: 3.124208 | -1.339447 | 0.456649 | -1.161155| -1.607082 |0.532566[0m
+[0m[ INFO] [1634804910.300262682]: after calibration:
+force_x: 3.311991, force_y: -4.495914, force_z: 2.369925,
+moment_x: -0.315339, moment_y: -0.245599, moment_z: 0.074275[0m
+[0m[ INFO] [1634804911.300115063]: before calibration:
+force_x: 201.082703, force_y: -165.390228, force_z: 343.872528,
+moment_x: 7.609342, moment_y: -6.358916, moment_z: -12.861164[0m
+[0m[ INFO] [1634804911.300182706]: get joint state: 3.124232 | -1.339352 | 0.456709 | -1.161034| -1.607178 |0.532494[0m
+[0m[ INFO] [1634804911.300240104]: after calibration:
+force_x: 2.791179, force_y: -2.504583, force_z: 4.243790,
+moment_x: -0.135684, moment_y: -0.200613, moment_z: 0.059474[0m
+[0m[ INFO] [1634804912.300154169]: before calibration:
+force_x: 201.376358, force_y: -165.186340, force_z: 343.847260,
+moment_x: 7.630799, moment_y: -6.384812, moment_z: -12.864439[0m
+[0m[ INFO] [1634804912.300312060]: get joint state: 3.124196 | -1.339363 | 0.456661 | -1.161119| -1.607226 |0.532494[0m
+[0m[ INFO] [1634804912.300381997]: after calibration:
+force_x: 3.084922, force_y: -2.301048, force_z: 4.219343,
+moment_x: -0.114223, moment_y: -0.226509, moment_z: 0.056199[0m
+[0m[ INFO] [1634804913.300125746]: before calibration:
+force_x: 201.416702, force_y: -165.211090, force_z: 343.845612,
+moment_x: 7.628780, moment_y: -6.395422, moment_z: -12.864761[0m
+[0m[ INFO] [1634804913.300194380]: get joint state: 3.124196 | -1.339387 | 0.456697 | -1.161095| -1.607226 |0.532494[0m
+[0m[ INFO] [1634804913.300291754]: after calibration:
+force_x: 3.125213, force_y: -2.325736, force_z: 4.217497,
+moment_x: -0.116243, moment_y: -0.237119, moment_z: 0.055877[0m
+[0m[ INFO] [1634804914.300191557]: before calibration:
+force_x: 201.316406, force_y: -165.173950, force_z: 343.761627,
+moment_x: 7.641031, moment_y: -6.388273, moment_z: -12.868488[0m
+[0m[ INFO] [1634804914.300265044]: get joint state: 3.124256 | -1.339376 | 0.456673 | -1.161083| -1.607178 |0.532494[0m
+[0m[ INFO] [1634804914.300328884]: after calibration:
+force_x: 3.025068, force_y: -2.288475, force_z: 4.133493,
+moment_x: -0.103993, moment_y: -0.229970, moment_z: 0.052149[0m
+[0m[ INFO] [1634804915.300192675]: before calibration:
+force_x: 203.267532, force_y: -157.752487, force_z: 342.992462,
+moment_x: 8.268537, moment_y: -6.610208, moment_z: -12.891540[0m
+[0m[ INFO] [1634804915.300265183]: get joint state: 3.125333 | -1.340670 | 0.456433 | -1.253835| -1.376665 |0.532602[0m
+[0m[ INFO] [1634804915.300328154]: after calibration:
+force_x: 5.540527, force_y: 5.381378, force_z: 4.123404,
+moment_x: 0.525265, moment_y: -0.450320, moment_z: 0.027277[0m
+[0m[ INFO] [1634804916.300139963]: before calibration:
+force_x: 201.336121, force_y: -151.492462, force_z: 333.590485,
+moment_x: 8.925437, moment_y: -6.347228, moment_z: -12.992388[0m
+[0m[ INFO] [1634804916.300212950]: get joint state: 3.127438 | -1.341976 | 0.456277 | -1.744803| -1.052470 |0.532626[0m
+[0m[ INFO] [1634804916.300277730]: after calibration:
+force_x: 4.581867, force_y: 11.711789, force_z: -0.356519,
+moment_x: 1.198812, moment_y: -0.186287, moment_z: -0.076876[0m
+[0m[ INFO] [1634804917.300174699]: before calibration:
+force_x: 199.654648, force_y: -153.663040, force_z: 332.032776,
+moment_x: 8.588012, moment_y: -6.235528, moment_z: -12.970037[0m
+[0m[ INFO] [1634804917.300241787]: get joint state: 3.128791 | -1.342611 | 0.456349 | -1.875929| -1.051501 |0.532482[0m
+[0m[ INFO] [1634804917.300316713]: after calibration:
+force_x: 2.985390, force_y: 9.451901, force_z: -0.650940,
+moment_x: 0.866027, moment_y: -0.074882, moment_z: -0.054859[0m
+[0m[ INFO] [1634804918.300173227]: before calibration:
+force_x: 199.703156, force_y: -153.354294, force_z: 332.982025,
+moment_x: 8.631784, moment_y: -6.257699, moment_z: -12.973909[0m
+[0m[ INFO] [1634804918.300267943]: get joint state: 3.128731 | -1.342731 | 0.456373 | -1.876049| -1.051513 |0.532482[0m
+[0m[ INFO] [1634804918.300332398]: after calibration:
+force_x: 3.033963, force_y: 9.760347, force_z: 0.300416,
+moment_x: 0.909809, moment_y: -0.097053, moment_z: -0.058731[0m
+[0m[ INFO] [1634804919.300137351]: before calibration:
+force_x: 199.851837, force_y: -153.406235, force_z: 332.712433,
+moment_x: 8.618490, moment_y: -6.266566, moment_z: -12.967724[0m
+[0m[ INFO] [1634804919.300211394]: get joint state: 3.128814 | -1.342755 | 0.456313 | -1.876061| -1.051501 |0.532494[0m
+[0m[ INFO] [1634804919.300274787]: after calibration:
+force_x: 3.182766, force_y: 9.708570, force_z: 0.031796,
+moment_x: 0.896516, moment_y: -0.105920, moment_z: -0.052546[0m
+[0m[ INFO] [1634804920.300152965]: before calibration:
+force_x: 199.832916, force_y: -153.520538, force_z: 332.649628,
+moment_x: 8.612412, moment_y: -6.267581, moment_z: -12.967400[0m
+[0m[ INFO] [1634804920.300227426]: get joint state: 3.128755 | -1.342755 | 0.456313 | -1.876097| -1.051536 |0.532470[0m
+[0m[ INFO] [1634804920.300371447]: after calibration:
+force_x: 3.163791, force_y: 9.594021, force_z: -0.030737,
+moment_x: 0.890440, moment_y: -0.106936, moment_z: -0.052221[0m
+[0m[ INFO] [1634804921.300121404]: before calibration:
+force_x: 199.813034, force_y: -153.519760, force_z: 332.619934,
+moment_x: 8.615419, moment_y: -6.268067, moment_z: -12.964891[0m
+[0m[ INFO] [1634804921.300190453]: get joint state: 3.128779 | -1.342719 | 0.456361 | -1.876013| -1.051525 |0.532482[0m
+[0m[ INFO] [1634804921.300249560]: after calibration:
+force_x: 3.143845, force_y: 9.594987, force_z: -0.062059,
+moment_x: 0.893442, moment_y: -0.107421, moment_z: -0.049713[0m
+[0m[ INFO] [1634804922.300177150]: before calibration:
+force_x: 199.852509, force_y: -153.542938, force_z: 332.676758,
+moment_x: 8.618487, moment_y: -6.272181, moment_z: -12.964025[0m
+[0m[ INFO] [1634804922.300245838]: get joint state: 3.128779 | -1.342707 | 0.456313 | -1.876049| -1.051477 |0.532458[0m
+[0m[ INFO] [1634804922.300303793]: after calibration:
+force_x: 3.183401, force_y: 9.571877, force_z: -0.004414,
+moment_x: 0.896512, moment_y: -0.111536, moment_z: -0.048847[0m
+[0m[ INFO] [1634804923.300076121]: before calibration:
+force_x: 199.862671, force_y: -153.537491, force_z: 332.705811,
+moment_x: 8.614384, moment_y: -6.269849, moment_z: -12.962407[0m
+[0m[ INFO] [1634804923.300144641]: get joint state: 3.128779 | -1.342743 | 0.456325 | -1.876037| -1.051477 |0.532446[0m
+[0m[ INFO] [1634804923.300203269]: after calibration:
+force_x: 3.193570, force_y: 9.577316, force_z: 0.024752,
+moment_x: 0.892409, moment_y: -0.109204, moment_z: -0.047229[0m
+[0m[ INFO] [1634804924.300016718]: before calibration:
+force_x: 199.882431, force_y: -153.492706, force_z: 332.766357,
+moment_x: 8.612362, moment_y: -6.268816, moment_z: -12.964054[0m
+[0m[ INFO] [1634804924.300093997]: get joint state: 3.128767 | -1.342695 | 0.456349 | -1.876037| -1.051525 |0.532482[0m
+[0m[ INFO] [1634804924.300157853]: after calibration:
+force_x: 3.213240, force_y: 9.622005, force_z: 0.084477,
+moment_x: 0.890384, moment_y: -0.108170, moment_z: -0.048876[0m
+[0m[ INFO] [1634804925.300172309]: before calibration:
+force_x: 199.852631, force_y: -153.531601, force_z: 332.706360,
+moment_x: 8.616431, moment_y: -6.269847, moment_z: -12.963223[0m
+[0m[ INFO] [1634804925.300237386]: get joint state: 3.128791 | -1.342707 | 0.456361 | -1.876073| -1.051513 |0.532458[0m
+[0m[ INFO] [1634804925.300292327]: after calibration:
+force_x: 3.183487, force_y: 9.583172, force_z: 0.024868,
+moment_x: 0.894454, moment_y: -0.109201, moment_z: -0.048044[0m
+[0m[ INFO] [1634804926.300078789]: before calibration:
+force_x: 199.901642, force_y: -153.525757, force_z: 332.734741,
+moment_x: 8.618458, moment_y: -6.271064, moment_z: -12.961548[0m
+[0m[ INFO] [1634804926.300148158]: get joint state: 3.128767 | -1.342707 | 0.456313 | -1.876049| -1.051501 |0.532494[0m
+[0m[ INFO] [1634804926.300207591]: after calibration:
+force_x: 3.232505, force_y: 9.588973, force_z: 0.053516,
+moment_x: 0.896483, moment_y: -0.110418, moment_z: -0.046370[0m
+[0m[ INFO] [1634804927.300062058]: before calibration:
+force_x: 199.882492, force_y: -153.560486, force_z: 332.733734,
+moment_x: 8.614388, moment_y: -6.271011, moment_z: -12.961584[0m
+[0m[ INFO] [1634804927.300120054]: get joint state: 3.128791 | -1.342755 | 0.456361 | -1.876049| -1.051525 |0.532470[0m
+[0m[ INFO] [1634804927.300173127]: after calibration:
+force_x: 3.213351, force_y: 9.554244, force_z: 0.052451,
+moment_x: 0.892413, moment_y: -0.110366, moment_z: -0.046406[0m
