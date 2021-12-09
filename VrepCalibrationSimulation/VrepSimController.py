@@ -39,22 +39,24 @@ class UR5Robot:
             print('[ERRO] Remote API function call returned with, return code: ', res)
 
         for i in range(self.JOINT_NUM):
-            res, returnHandle = vrep.simxGetObjectHandle(self.__client_id, self.JOINT_NAME + str(i + 1), vrep.simx_opmode_blocking)
+            res, returnHandle = vrep.simxGetObjectHandle(self.__client_id, self.JOINT_NAME + str(i + 1),
+                                                         vrep.simx_opmode_blocking)
             if res != vrep.simx_return_ok:
                 print("[ERRO] get joint handle error, return code: ", res)
             self.__joint_handles[i] = returnHandle
-            res, cur_pos = vrep.simxGetJointPosition(self.__client_id, self.__joint_handles[i], vrep.simx_opmode_blocking)
+            res, cur_pos = vrep.simxGetJointPosition(self.__client_id, self.__joint_handles[i],
+                                                     vrep.simx_opmode_blocking)
             if res != vrep.simx_return_ok:
                 print("[ERRO] get joint position error, return code: ", res)
             self.__current_joint_angle[i] = cur_pos
 
         res, self.__camera_rgb_handle = vrep.simxGetObjectHandle(self.__client_id, self.CAMERA_RGB_NAME,
-                                                                vrep.simx_opmode_blocking)
+                                                                 vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get rgb camera handle error, return code: ", res)
 
         res, self.__camera_depth_handle = vrep.simxGetObjectHandle(self.__client_id, self.CAMERA_DEPTH_NAME,
-                                                                  vrep.simx_opmode_blocking)
+                                                                   vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get depth camera handle error, return code: ", res)
 
@@ -66,44 +68,44 @@ class UR5Robot:
 
     def set_streaming_mode(self):
         res, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
-                                                  vrep.simx_opmode_streaming)
+                                                   vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed, return code: {}".format(res))
         res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
-                                             vrep.simx_opmode_streaming)
+                                              vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(res))
         res, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
-                                                  vrep.simx_opmode_streaming)
+                                                   vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed, return code: {}".format(res))
         res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
-                                             vrep.simx_opmode_streaming)
+                                              vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(res))
 
         res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
-                                                                  vrep.simx_opmode_streaming)
+                                                                   vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage rgb failed, return code: {}".format(res))
 
         res, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
-                                                                    vrep.simx_opmode_streaming)
+                                                                     vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage depth failed, return code: {}".format(res))
         res, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id,
-                                                                           self.__camera_depth_handle,
-                                                                           vrep.simx_opmode_streaming)
+                                                                            self.__camera_depth_handle,
+                                                                            vrep.simx_opmode_streaming)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(res))
 
     def get_base2end_matrix(self):
         res, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
-                                                  vrep.simx_opmode_buffer)
+                                                   vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed")
         res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
-                                             vrep.simx_opmode_buffer)
+                                              vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed")
         rotation_matrix = self.quaternion_to_rotation_matrix(q)
@@ -114,11 +116,11 @@ class UR5Robot:
 
     def get_end2base_matrix(self):
         res, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
-                                                  vrep.simx_opmode_buffer)
+                                                   vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed")
         res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
-                                             vrep.simx_opmode_buffer)
+                                              vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed")
         rotation_matrix = self.quaternion_to_rotation_matrix(q)
@@ -130,10 +132,10 @@ class UR5Robot:
 
     def get_rgb_image(self):
         res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
-                                                                  vrep.simx_opmode_buffer)
+                                                                   vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage rgb failed")
-        sensor_image = np.array(image_rgb, dtype = np.uint8)
+        sensor_image = np.array(image_rgb, dtype=np.uint8)
         sensor_image.resize([resolution[1], resolution[0], 3])
         print("[INFO] rgb image resolution0: ", resolution[0], "resolution1: ", resolution[1])
         sensor_image = cv2.cvtColor(sensor_image, cv2.COLOR_BGR2RGB)
@@ -142,7 +144,7 @@ class UR5Robot:
 
     def get_depth_image(self):
         res, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
-                                                                    vrep.simx_opmode_buffer)
+                                                                     vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage depth failed")
         sensor_image = np.array(image_depth, dtype=np.uint8)
@@ -157,7 +159,8 @@ class UR5Robot:
 
     def rotate_joint(self, joint_id, angle):
         res = vrep.simxSetJointTargetPosition(self.__client_id, self.__joint_handles[joint_id],
-                                       (self.__current_joint_angle[joint_id] - angle) / (180 / math.pi), vrep.simx_opmode_oneshot)
+                                              (self.__current_joint_angle[joint_id] - angle) / (180 / math.pi),
+                                              vrep.simx_opmode_oneshot)
         if res != vrep.simx_return_ok:
             print("[ERRO] get joint position error, return code: ", res)
             return
@@ -170,8 +173,9 @@ class UR5Robot:
         far = 3.5
         near = 0.01
 
-        res, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id, self.__camera_depth_handle,
-                                                                           vrep.simx_opmode_buffer)
+        res, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id,
+                                                                            self.__camera_depth_handle,
+                                                                            vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(res))
         # depth_buffer dtype: float64
@@ -182,8 +186,10 @@ class UR5Robot:
         for i in range(resolution_y):
             for j in range(resolution_x):
                 point_array[i * resolution_x + j][2] = near + depth_buffer[i * resolution_x + j] * (far - near)
-                point_array[i * resolution_x + j][0] = ((j - resolution_x / 2) / focal_x) * point_array[i * resolution_x + j][2]
-                point_array[i * resolution_x + j][1] = ((i - resolution_y / 2) / focal_x) * point_array[i * resolution_x + j][2]
+                point_array[i * resolution_x + j][0] = ((j - resolution_x / 2) / focal_x) * \
+                                                       point_array[i * resolution_x + j][2]
+                point_array[i * resolution_x + j][1] = ((i - resolution_y / 2) / focal_x) * \
+                                                       point_array[i * resolution_x + j][2]
 
         cloud_point = o3d.geometry.PointCloud()
         cloud_point.points = o3d.utility.Vector3dVector(point_array)
@@ -208,13 +214,16 @@ class UR5Robot:
     def get_joint_angles(self):
         joint_states = []
         for i in range(self.JOINT_NUM):
-            _, joint_state = vrep.simxGetJointPosition(self.__client_id, self.__joint_handles[i], vrep.simx_opmode_blocking)
+            _, joint_state = vrep.simxGetJointPosition(self.__client_id, self.__joint_handles[i],
+                                                       vrep.simx_opmode_blocking)
             joint_states.append(joint_state)
         return joint_states
 
     def get_camera2end_matrix(self):
-        _, position = vrep.simxGetObjectPosition(self.__client_id, self.__camera_depth_handle, self.__ur5_handle, vrep.simx_opmode_blocking)
-        _, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__camera_depth_handle, self.__ur5_handle, vrep.simx_opmode_blocking)
+        _, position = vrep.simxGetObjectPosition(self.__client_id, self.__camera_depth_handle, self.__ur5_handle,
+                                                 vrep.simx_opmode_blocking)
+        _, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__camera_depth_handle, self.__ur5_handle,
+                                            vrep.simx_opmode_blocking)
         rotation_matrix = self.quaternion_to_rotation_matrix(q)
         camera2end = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], position[0]],
                        [rotation_matrix[1][0], rotation_matrix[1][1], rotation_matrix[1][2], position[1]],
@@ -254,9 +263,9 @@ class CalibrationSimulation:
         self.cur_point_number = 0
         # 是否显示中间过程的图像
         self.__display_image = display_image
-        self.__camera2end = np.matrix([[0.9987622478905662, 0.0008074565017266062, 0.04932178981009312, 0.1101],
-                                       [0.030765510003383092, 0.7751298427810274, -0.6251690915020819, -0.0168],
-                                       [-0.03855871276773799, 0.6259251213917719, 0.7741498177352746, 0.0210],
+        self.__camera2end = np.matrix([[-0.8888, -0.3476, 0.2986, -0.2398],
+                                       [0.3952, -0.9114, 0.1152, -0.1883],
+                                       [0.2321, 0.2204, 0.9474, -0.0023],
                                        [0, 0, 0, 1]])
         # camera2end = self.robot.get_camera2end_matrix()
         # print("[INFO] camera2end matrix:")
@@ -364,6 +373,9 @@ class CalibrationSimulation:
         if self.__display_image:
             o3d.visualization.draw_geometries([point_cloud])
         res, circle_center = self.find_circle_center(point_cloud)
+        if not res:
+            print("[ERRO] can not get ball center")
+            return
         circle_center.append(1)
         circle_center = np.matrix(circle_center)
         # numpy reshape不是对原始的矩阵操作，而是会把修改后的矩阵返回
