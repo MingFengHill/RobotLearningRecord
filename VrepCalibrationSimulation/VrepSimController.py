@@ -18,10 +18,10 @@ import scipy.optimize as opt
 # simRemoteApi.start(20001, 1300, false, false)
 class UR5Robot:
     def __init__(self):
-        self.joint_num = 6
-        self.joint_name = "UR5_joint"
-        self.camera_rgb_name = "kinect_rgb"
-        self.camera_depth_name = "kinect_depth"
+        self.JOINT_NUM = 6
+        self.JOINT_NAME = "UR5_joint"
+        self.CAMERA_RGB_NAME = "kinect_rgb"
+        self.CAMERA_DEPTH_NAME = "kinect_depth"
         self.__joint_handles = [0 for _ in range(6)]
         self.__current_joint_angle = [0 for _ in range(6)]
 
@@ -38,8 +38,8 @@ class UR5Robot:
         else:
             print('[ERRO] Remote API function call returned with, return code: ', res)
 
-        for i in range(self.joint_num):
-            res, returnHandle = vrep.simxGetObjectHandle(self.__client_id, self.joint_name + str(i + 1), vrep.simx_opmode_blocking)
+        for i in range(self.JOINT_NUM):
+            res, returnHandle = vrep.simxGetObjectHandle(self.__client_id, self.JOINT_NAME + str(i + 1), vrep.simx_opmode_blocking)
             if res != vrep.simx_return_ok:
                 print("[ERRO] get joint handle error, return code: ", res)
             self.__joint_handles[i] = returnHandle
@@ -48,12 +48,12 @@ class UR5Robot:
                 print("[ERRO] get joint position error, return code: ", res)
             self.__current_joint_angle[i] = cur_pos
 
-        res, self.__camera_rgb_handle = vrep.simxGetObjectHandle(self.__client_id, self.camera_rgb_name,
+        res, self.__camera_rgb_handle = vrep.simxGetObjectHandle(self.__client_id, self.CAMERA_RGB_NAME,
                                                                 vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get rgb camera handle error, return code: ", res)
 
-        res, self.__camera_depth_handle = vrep.simxGetObjectHandle(self.__client_id, self.camera_depth_name,
+        res, self.__camera_depth_handle = vrep.simxGetObjectHandle(self.__client_id, self.CAMERA_DEPTH_NAME,
                                                                   vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get depth camera handle error, return code: ", res)
@@ -65,46 +65,46 @@ class UR5Robot:
         self.set_streaming_mode()
 
     def set_streaming_mode(self):
-        re, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
+        res, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
                                                   vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetObjectPosition failed, return code: {}".format(re))
-        re, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetObjectPosition failed, return code: {}".format(res))
+        res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
                                              vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(re))
-        re, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(res))
+        res, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
                                                   vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetObjectPosition failed, return code: {}".format(re))
-        re, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetObjectPosition failed, return code: {}".format(res))
+        res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
                                              vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(re))
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetObjectQuaternion failed, return code: {}".format(res))
 
-        re, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
+        res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
                                                                   vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetVisionSensorImage rgb failed, return code: {}".format(re))
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetVisionSensorImage rgb failed, return code: {}".format(res))
 
-        re, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
+        res, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
                                                                     vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetVisionSensorImage depth failed, return code: {}".format(re))
-        re, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id,
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetVisionSensorImage depth failed, return code: {}".format(res))
+        res, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id,
                                                                            self.__camera_depth_handle,
                                                                            vrep.simx_opmode_streaming)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(re))
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(res))
 
     def get_base2end_matrix(self):
-        re, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
+        res, position = vrep.simxGetObjectPosition(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
                                                   vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed")
-        re, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
+        res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__joint_handles[0], self.__ur5_handle,
                                              vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed")
         rotation_matrix = self.quaternion_to_rotation_matrix(q)
         base2end = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], position[0]],
@@ -113,13 +113,13 @@ class UR5Robot:
         return base2end, rotation_matrix, position
 
     def get_end2base_matrix(self):
-        re, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
+        res, position = vrep.simxGetObjectPosition(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
                                                   vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectPosition failed")
-        re, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
+        res, q = vrep.simxGetObjectQuaternion(self.__client_id, self.__ur5_handle, self.__joint_handles[0],
                                              vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetObjectQuaternion failed")
         rotation_matrix = self.quaternion_to_rotation_matrix(q)
         end2base = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], position[0]],
@@ -129,9 +129,9 @@ class UR5Robot:
         return end2base, rotation_matrix, position
 
     def get_rgb_image(self):
-        re, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
+        res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
                                                                   vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage rgb failed")
         sensor_image = np.array(image_rgb, dtype = np.uint8)
         sensor_image.resize([resolution[1], resolution[0], 3])
@@ -141,9 +141,9 @@ class UR5Robot:
         return sensor_image
 
     def get_depth_image(self):
-        re, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
+        res, resolution, image_depth = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_depth_handle, 0,
                                                                     vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
+        if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorImage depth failed")
         sensor_image = np.array(image_depth, dtype=np.uint8)
         sensor_image.resize([resolution[1], resolution[0], 3])
@@ -170,10 +170,10 @@ class UR5Robot:
         far = 3.5
         near = 0.01
 
-        re, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id, self.__camera_depth_handle,
+        res, resolution, depth_buffer = vrep.simxGetVisionSensorDepthBuffer(self.__client_id, self.__camera_depth_handle,
                                                                            vrep.simx_opmode_buffer)
-        if re != vrep.simx_return_ok:
-            print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(re))
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(res))
         # depth_buffer dtype: float64
         depth_buffer = np.array(depth_buffer)
         point_array = np.zeros((resolution_x * resolution_y, 3))
@@ -207,7 +207,7 @@ class UR5Robot:
 
     def get_joint_angles(self):
         joint_states = []
-        for i in range(self.joint_num):
+        for i in range(self.JOINT_NUM):
             _, joint_state = vrep.simxGetJointPosition(self.__client_id, self.__joint_handles[i], vrep.simx_opmode_blocking)
             joint_states.append(joint_state)
         return joint_states
