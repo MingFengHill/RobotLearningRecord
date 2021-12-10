@@ -160,7 +160,7 @@ class UR5Robot:
     def rotate_joint(self, joint_id, angle):
         res = vrep.simxSetJointTargetPosition(self.__client_id, self.__joint_handles[joint_id],
                                               (self.__current_joint_angle[joint_id] - angle) / (180 / math.pi),
-                                              vrep.simx_opmode_oneshot)
+                                              vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get joint position error, return code: ", res)
             return
@@ -186,7 +186,8 @@ class UR5Robot:
         for i in range(resolution_y):
             for j in range(resolution_x):
                 point_array[i * resolution_x + j][2] = near + depth_buffer[i * resolution_x + j] * (far - near)
-                point_array[i * resolution_x + j][0] = ((j - resolution_x / 2) / focal_x) * \
+                # TODO: 确定为什么要对x轴取反
+                point_array[i * resolution_x + j][0] = -((j - resolution_x / 2) / focal_x) * \
                                                        point_array[i * resolution_x + j][2]
                 point_array[i * resolution_x + j][1] = ((i - resolution_y / 2) / focal_x) * \
                                                        point_array[i * resolution_x + j][2]
@@ -351,6 +352,7 @@ class CalibrationSimulation:
         if self.__display_image:
             o3d.visualization.draw_geometries([point_cloud])
 
+        base2end_matrix, _, _ = self.robot.get_base2end_matrix()
         res, circle_center = self.find_circle_center(point_cloud)
         if res:
             with open("circle_center.txt", "a+", encoding="utf-8") as f:
@@ -358,7 +360,6 @@ class CalibrationSimulation:
                     f.write("{:.14f}".format(circle_center[i]) + " ")
                 f.write("\n")
 
-            base2end_matrix, _, _ = self.robot.get_base2end_matrix()
             with open("base2end_matrix.txt", "a+", encoding="utf-8") as f:
                 for i in range(3):
                     for j in range(4):
