@@ -197,6 +197,12 @@ class CalibrationSimulation:
         self.__datas = []
         self.result = CalibrationResult()
         self.calibration_down = False
+        self.FORCE_X_DEVIATION = 10
+        self.FORCE_Y_DEVIATION = 20
+        self.FORCE_Z_DEVIATION = 30
+        self.TORQUE_X_DEVIATION = 40
+        self.TORQUE_Y_DEVIATION = 50
+        self.TORQUE_Z_DEVIATION = 60
 
     def run_loop(self):
         while (True):
@@ -256,6 +262,12 @@ class CalibrationSimulation:
         data = CalibrationData()
         data.force = force
         data.torque = torque
+        data.force[0] += self.FORCE_X_DEVIATION
+        data.force[1] += self.FORCE_Y_DEVIATION
+        data.force[2] += self.FORCE_Z_DEVIATION
+        data.torque[0] += self.TORQUE_X_DEVIATION
+        data.torque[1] += self.TORQUE_Y_DEVIATION
+        data.torque[2] += self.TORQUE_Z_DEVIATION
         data.rotation_matrix = rotation_matrix
         self.__datas.append(data)
         print("[INFO] add position success, current data number: {}".format(len(self.__datas)))
@@ -280,6 +292,9 @@ class CalibrationSimulation:
             f.write("centroidX: {}\n".format(self.result.centroidX))
             f.write("centroidY: {}\n".format(self.result.centroidY))
             f.write("centroidZ: {}\n".format(self.result.centroidZ))
+            f.write("G: {}\n".format(self.result.G))
+            f.write("Gsin: {}\n".format(self.result.Gsin))
+            f.write("Gcos: {}\n".format(self.result.Gcos))
 
         self.__datas.clear()
         self.calibration_down = True
