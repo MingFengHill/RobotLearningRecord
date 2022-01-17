@@ -264,9 +264,9 @@ class CalibrationSimulation:
         self.cur_point_number = 0
         # 是否显示中间过程的图像
         self.__display_image = display_image
-        self.__camera2end = np.matrix([[-0.8888, -0.3476, 0.2986, -0.2398],
-                                       [0.3952, -0.9114, 0.1152, -0.1883],
-                                       [0.2321, 0.2204, 0.9474, -0.0023],
+        self.__camera2end = np.matrix([[-0.0003, 1.0000, 0.0006, 0.0960],
+                                       [-1.0000, -0.0003, 0.0006, -0.0140],
+                                       [0.0006, -0.0006, 1.0000, 0.0179],
                                        [0, 0, 0, 1]])
         # camera2end = self.robot.get_camera2end_matrix()
         # print("[INFO] camera2end matrix:")
