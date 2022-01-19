@@ -1,34 +1,56 @@
-import os
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
-import math
-import time
-import random
-import string
 import pygame
 import numpy as np
 import open3d as o3d
-import vrep
-import cv2
-import matplotlib.pyplot as plt
-import scipy.optimize as opt
 from threading import Thread
 import ur5
+import rospy
+from std_msgs.msg import Header
+from sensor_msgs.msg import PointCloud2, PointField
+import sensor_msgs.point_cloud2 as pc2
 
 
-# class CloudPointPubThread(Thread):
-#     """ 点云发布子线程 """
-#     def __init__(self, robot, camera2end):
-#         Thread.__init__(self)
-#         self.robot = robot
-#         self.camera2end = camera2end
-#
-#     def run(self):
-#         pass
+# https://github.com/felixchenfy/open3d_ros_pointcloud_conversion/blob/master/lib_cloud_conversion_between_Open3D_and_ROS.py
+def convert_cloud_point_open3d_to_ros(open3d_cloud, frame_id="map"):
+    """ open3d点云转ROS格式 """
+    fields = [PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+              PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+              PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1)]
+    header = Header()
+    header.stamp = rospy.Time.now()
+    header.frame_id = frame_id
+    point_array = np.asarray(open3d_cloud.points)
+
+    return pc2.create_cloud(header, fields, point_array)
+
+
+class CloudPointPubThread(Thread):
+    """ 点云发布子线程 """
+    def __init__(self, robot, camera2end):
+        Thread.__init__(self)
+        self.robot = robot
+        self.camera2end = camera2end
+        self.topic_name = "kinect2/points"
+        self.cloud_point_pub = rospy.Publisher(self.topic_name, PointCloud2, queue_size=10)
+
+    def run(self):
+        rate = rospy.Rate(1)
+        image_id = 0
+        while not rospy.is_shutdown():
+            open3d_cloud = self.robot.get_point_cloud()
+            ros_cloud = convert_cloud_point_open3d_to_ros(open3d_cloud)
+            self.cloud_point_pub.publish(ros_cloud)
+            print("[INFO] pub cloud point id: {}".format(image_id))
+            image_id += 1
+            rate.sleep()
 
 
 class MotionPlanSimulation:
     def __init__(self, display_image=False):
         pygame.init()
+        rospy.init_node('MotionPlanSimulation', anonymous=True)
         self.screen = pygame.display.set_mode((300, 300))
         pygame.display.set_caption("UR5 & Kinect")
         self.robot = ur5.UR5Robot()
@@ -42,6 +64,11 @@ class MotionPlanSimulation:
                                        [0.0006, -0.0006, 1.0000, 0.0179],
                                        [0, 0, 0, 1]])
         self.__cur_scene = o3d.geometry.PointCloud()
+        self.__cloud_point_pub_thr = CloudPointPubThread(self.robot, self.__camera2end)
+        # self.__cloud_point_pub_thr.start()
+
+    def __del__(self):
+        self.__cloud_point_pub_thr.join()
 
     def run_loop(self):
         while (True):
@@ -79,11 +106,12 @@ class MotionPlanSimulation:
                     elif event.key == pygame.K_k:
                         self.simple_scene_reconstruction()
                     elif event.key == pygame.K_l:
-                        self.verify_calibration_result()
+                        self.__cloud_point_pub_thr.start()
                     else:
                         print("Invalid input, no corresponding function for this key!")
 
     def simple_scene_reconstruction(self):
+        """ 叠加多次拍摄的点云，实现简单的场景重建 """
         point_cloud = self.robot.get_point_cloud()
         # point_array ndim: 2, point_array shape: (307200, 3)
         point_array = np.asarray(point_cloud.points)
@@ -103,73 +131,6 @@ class MotionPlanSimulation:
         cur_scene_array = np.row_stack((cur_scene_array, point_array))
         self.__cur_scene.points = o3d.utility.Vector3dVector(cur_scene_array)
         o3d.visualization.draw_geometries([self.__cur_scene])
-
-    def verify_calibration_result(self):
-        """ 验证在base坐标系下球心的坐标是否合理 """
-        point_cloud = self.robot.get_point_cloud()
-        if self.__display_image:
-            o3d.visualization.draw_geometries([point_cloud])
-        res, circle_center = self.find_circle_center(point_cloud)
-        if not res:
-            print("[ERRO] can not get ball center")
-            return
-        circle_center.append(1)
-        circle_center = np.matrix(circle_center)
-        # numpy reshape不是对原始的矩阵操作，而是会把修改后的矩阵返回
-        circle_center = circle_center.reshape(4, 1)
-        end2base, _, _ = self.robot.get_end2base_matrix()
-        end2base = np.matrix(end2base)
-        circle_center_base = end2base * self.__camera2end * circle_center
-        print(circle_center_base)
-
-    def find_circle_center(self, point_cloud):
-        labels = np.array(point_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=True))
-        max_label = labels.max()
-        print(f"[INFO] point cloud has {max_label + 1} clusters")
-        point_array = np.asarray(point_cloud.points)
-        print("[INFO] labels shape:", labels.shape)
-        print("[INFO] point_array shape:", point_array.shape)
-
-        for i in range(max_label + 1):
-            mask = labels == i
-            section_array = point_array[mask]
-            cloud_point_section = o3d.geometry.PointCloud()
-            cloud_point_section.points = o3d.utility.Vector3dVector(section_array)
-            if self.__display_image:
-                o3d.visualization.draw_geometries([cloud_point_section])
-
-            # 最小二乘法拟合球心
-            sphere_center, sphere_radius = self.sphere_fit(section_array)
-            print("[INFO] label {} center: {} radius: {}".format(i, sphere_center, sphere_radius))
-
-            if sphere_radius < 0.06:
-                # 可视化拟合结果
-                mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_radius)
-                mesh_circle.compute_vertex_normals()
-                mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
-                mesh_circle = mesh_circle.translate((sphere_center[0], sphere_center[1], sphere_center[2]))
-                o3d.visualization.draw_geometries([cloud_point_section, mesh_circle])
-                return True, sphere_center
-
-        return False, []
-
-    def spherrors(self, para, points):
-        """球面拟合误差"""
-        a, b, c, r = para
-        x = points[0, :]
-        y = points[1, :]
-        z = points[2, :]
-        return pow((x - a), 2) + pow((y - b), 2) + pow((z - c), 2) - pow(r, 2)
-
-    def sphere_fit(self, point):
-        """线性最小二乘拟合"""
-        tparas = opt.leastsq(self.spherrors, [1, 1, 1, 0.06], point.T, full_output=1)
-        paras = tparas[0]
-        sphere_r = abs(paras[3])
-        sphere_o = [paras[0], paras[1], paras[2]]
-        # 计算球度误差
-        es = np.mean(np.abs(tparas[2]['fvec'])) / paras[3]  # 'fvec'即为spherrors的值
-        return sphere_o, sphere_r
 
 
 def main():

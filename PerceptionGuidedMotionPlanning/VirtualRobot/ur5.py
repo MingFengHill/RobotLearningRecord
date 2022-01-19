@@ -1,17 +1,9 @@
-import os
-import sys
+# -*- coding: utf-8 -*-
 import math
-import time
-import random
-import string
-import pygame
 import numpy as np
 import open3d as o3d
 import vrep
 import cv2
-import matplotlib.pyplot as plt
-import pyransac3d as pyrsc
-import scipy.optimize as opt
 
 
 # 在机器人lua脚本中添加：
