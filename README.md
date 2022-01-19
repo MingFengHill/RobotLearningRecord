@@ -8,3 +8,4 @@
 | [VrepCalibrationSimulation](./VrepCalibrationSimulation) [python] | 基于vrep仿真的RGB-D相机机器人手眼标定 |
 | [3DReconstruction](./3DReconstruction) [python] | 三维重建学习 |
 | [ThreadPool](./ThreadPool) [C++] | Modern C++线程池 |
+| [PerceptionGuidedMotionPlanning](./PerceptionGuidedMotionPlanning) [C++/python] | 基于视觉感知的机械臂运动规划 |

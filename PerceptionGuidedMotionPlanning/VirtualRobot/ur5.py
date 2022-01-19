@@ -182,25 +182,22 @@ class UR5Robot:
         depth_buffer = np.array(depth_buffer)
         effective_point = 0
         for i in range(resolution_x * resolution_y):
-            if (1.0001 > depth_buffer[i] > 0.9999) or (0.0001 > depth_buffer[i] > -0.0001):
-                continue
-            effective_point += 1
+            if 0.9999 > depth_buffer[i] > 0.0001:
+                effective_point += 1
         print("[INFO] The number of valid points is: {}".format(effective_point))
         point_array = np.zeros((effective_point, 3))
         focal_x = (max(resolution_x, resolution_y) / 2) / math.tan(math.radians(perspective_angle) / 2)
         effective_point = 0
         for i in range(resolution_y):
             for j in range(resolution_x):
-                if (1.0001 > depth_buffer[i * resolution_x + j] > 0.9999) or \
-                        (0.0001 > depth_buffer[i * resolution_x + j] > -0.0001):
-                    continue
-                point_array[effective_point][2] = near + depth_buffer[i * resolution_x + j] * (far - near)
-                # TODO: 确定为什么要对x轴取反
-                point_array[effective_point][0] = -((j - resolution_x / 2) / focal_x) * \
-                                                       point_array[effective_point][2]
-                point_array[effective_point][1] = ((i - resolution_y / 2) / focal_x) * \
-                                                       point_array[effective_point][2]
-                effective_point += 1
+                if 0.9999 > depth_buffer[i * resolution_x + j] > 0.0001:
+                    point_array[effective_point][2] = near + depth_buffer[i * resolution_x + j] * (far - near)
+                    # TODO: 确定为什么要对x轴取反
+                    point_array[effective_point][0] = -((j - resolution_x / 2) / focal_x) * \
+                                                        point_array[effective_point][2]
+                    point_array[effective_point][1] = ((i - resolution_y / 2) / focal_x) * \
+                                                        point_array[effective_point][2]
+                    effective_point += 1
         cloud_point = o3d.geometry.PointCloud()
         cloud_point.points = o3d.utility.Vector3dVector(point_array)
         self.add_color_to_point_cloud(cloud_point)
