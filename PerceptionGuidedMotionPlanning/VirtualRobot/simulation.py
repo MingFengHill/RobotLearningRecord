@@ -89,20 +89,17 @@ class MotionPlanSimulation:
         point_array = np.asarray(point_cloud.points)
         print("point_array raw ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         point_array = point_array.T
-        # print("point_array transpose ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         point_array = np.row_stack((point_array, [1 for _ in range(point_array.shape[1])]))
-        # print("point_array row_stack ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         point_array = np.matrix(point_array)
         end2base, _, _ = self.robot.get_end2base_matrix()
         end2base = np.matrix(end2base)
+        # 图像坐标系 --> base坐标系
         point_array = end2base * self.__camera2end * point_array
-        # print("point_array multiplication ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         point_array = np.array(point_array)
         point_array = np.delete(point_array, 3, 0)
-        # print("point_array delete ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         point_array = point_array.T
-        # print("point_array transpose ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
         cur_scene_array = np.asarray(self.__cur_scene.points)
+        # 将图像叠加到已有的场景中
         cur_scene_array = np.row_stack((cur_scene_array, point_array))
         self.__cur_scene.points = o3d.utility.Vector3dVector(cur_scene_array)
         o3d.visualization.draw_geometries([self.__cur_scene])
