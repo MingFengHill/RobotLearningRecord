@@ -5,6 +5,8 @@ import open3d as o3d
 import vrep
 import cv2
 
+ur5_return_ok = 0x000000
+ur5_return_error = 0x000001
 
 # 在机器人lua脚本中添加：
 # simRemoteApi.start(20001, 1300, false, false)
@@ -170,14 +172,23 @@ class UR5Robot:
                                                                             vrep.simx_opmode_buffer)
         if res != vrep.simx_return_ok:
             print("[ERRO] simxGetVisionSensorDepthBuffer failed, return code: {}".format(res))
+            return ur5_return_error, []
         # depth_buffer dtype: float64
         depth_buffer = np.array(depth_buffer)
+        res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
+                                                                   vrep.simx_opmode_buffer)
+        if res != vrep.simx_return_ok:
+            print("[ERRO] simxGetVisionSensorImage failed, return code: {}".format(res))
+            return ur5_return_error, []
+        rgb_image = np.array(image_rgb, dtype=np.uint8)
+        rgb_image.resize([resolution[0] * resolution[1], 3])
         effective_point = 0
         for i in range(resolution_x * resolution_y):
             if 0.9999 > depth_buffer[i] > 0.0001:
                 effective_point += 1
         print("[INFO] The number of valid points is: {}".format(effective_point))
         point_array = np.zeros((effective_point, 3))
+        color_array = np.zeros((effective_point, 3), dtype=np.float64)
         focal_x = (max(resolution_x, resolution_y) / 2) / math.tan(math.radians(perspective_angle) / 2)
         effective_point = 0
         for i in range(resolution_y):
@@ -189,26 +200,14 @@ class UR5Robot:
                                                         point_array[effective_point][2]
                     point_array[effective_point][1] = ((i - resolution_y / 2) / focal_x) * \
                                                         point_array[effective_point][2]
+                    color_array[effective_point][0] = rgb_image[i * resolution_x + j][0] / 256.0
+                    color_array[effective_point][1] = rgb_image[i * resolution_x + j][1] / 256.0
+                    color_array[effective_point][2] = rgb_image[i * resolution_x + j][2] / 256.0
                     effective_point += 1
         cloud_point = o3d.geometry.PointCloud()
         cloud_point.points = o3d.utility.Vector3dVector(point_array)
-        self.add_color_to_point_cloud(cloud_point)
-        return cloud_point
-
-    def add_color_to_point_cloud(self, cloud_point):
-        res, resolution, image_rgb = vrep.simxGetVisionSensorImage(self.__client_id, self.__camera_rgb_handle, 0,
-                                                                   vrep.simx_opmode_buffer)
-        rgb_image = np.array(image_rgb, dtype=np.uint8)
-        rgb_image.resize([resolution[0] * resolution[1], 3])
-        print("[INFO] rgb image resolution0: ", resolution[0], "resolution1: ", resolution[1])
-        resolution_x = 640
-        resolution_y = 480
-        color_array = np.zeros((resolution_x * resolution_y, 3), dtype=np.float64)
-        for i in range(resolution_x * resolution_y):
-            color_array[i][0] = rgb_image[i][0] / 256.0
-            color_array[i][1] = rgb_image[i][1] / 256.0
-            color_array[i][2] = rgb_image[i][2] / 256.0
         cloud_point.colors = o3d.utility.Vector3dVector(color_array)
+        return ur5_return_ok, cloud_point
 
     def get_joint_angles(self):
         joint_states = []

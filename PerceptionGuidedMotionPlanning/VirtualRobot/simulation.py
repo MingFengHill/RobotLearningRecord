@@ -4,12 +4,12 @@ import sys
 import pygame
 import numpy as np
 import open3d as o3d
-from threading import Thread
 import ur5
 import rospy
+import sensor_msgs.point_cloud2 as pc2
+from threading import Thread
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2, PointField
-import sensor_msgs.point_cloud2 as pc2
 
 
 # https://github.com/felixchenfy/open3d_ros_pointcloud_conversion/blob/master/lib_cloud_conversion_between_Open3D_and_ROS.py
@@ -28,23 +28,26 @@ def convert_cloud_point_open3d_to_ros(open3d_cloud, frame_id="map"):
 
 class CloudPointPubThread(Thread):
     """ 点云发布子线程 """
+
     def __init__(self, robot, camera2end):
         Thread.__init__(self)
         self.robot = robot
         self.camera2end = camera2end
-        self.topic_name = "kinect2/points"
-        self.cloud_point_pub = rospy.Publisher(self.topic_name, PointCloud2, queue_size=10)
+        self.TOPIC_NAME = "kinect2/points"
+        self.cloud_point_pub = rospy.Publisher(self.TOPIC_NAME, PointCloud2, queue_size=10)
 
     def run(self):
         rate = rospy.Rate(1)
         image_id = 0
         while not rospy.is_shutdown():
-            open3d_cloud = self.robot.get_point_cloud()
-            ros_cloud = convert_cloud_point_open3d_to_ros(open3d_cloud)
+            rate.sleep()
+            ret, open3d_cloud = self.robot.get_point_cloud()
+            if ret == ur5.ur5_return_error:
+                continue
+            ros_cloud = convert_cloud_point_open3d_to_ros(open3d_cloud, "map")
             self.cloud_point_pub.publish(ros_cloud)
             print("[INFO] pub cloud point id: {}".format(image_id))
             image_id += 1
-            rate.sleep()
 
 
 class MotionPlanSimulation:
@@ -65,7 +68,9 @@ class MotionPlanSimulation:
                                        [0, 0, 0, 1]])
         self.__cur_scene = o3d.geometry.PointCloud()
         self.__cloud_point_pub_thr = CloudPointPubThread(self.robot, self.__camera2end)
-        # self.__cloud_point_pub_thr.start()
+        self.__cloud_point_pub_thr.start()
+        self.CUR_SCENE_TOPIC = "kinect2/cur_scene"
+        self.cur_scene_pub = rospy.Publisher(self.CUR_SCENE_TOPIC, PointCloud2, queue_size=10)
 
     def __del__(self):
         self.__cloud_point_pub_thr.join()
@@ -105,14 +110,15 @@ class MotionPlanSimulation:
                         self.robot.rotate_joint(5, -self.step)
                     elif event.key == pygame.K_k:
                         self.simple_scene_reconstruction()
-                    elif event.key == pygame.K_l:
-                        self.__cloud_point_pub_thr.start()
                     else:
                         print("Invalid input, no corresponding function for this key!")
 
     def simple_scene_reconstruction(self):
         """ 叠加多次拍摄的点云，实现简单的场景重建 """
-        point_cloud = self.robot.get_point_cloud()
+        ret, point_cloud = self.robot.get_point_cloud()
+        if ret == ur5.ur5_return_error:
+            return
+        # o3d.visualization.draw_geometries([point_cloud])
         # point_array ndim: 2, point_array shape: (307200, 3)
         point_array = np.asarray(point_cloud.points)
         print("point_array raw ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
@@ -130,7 +136,9 @@ class MotionPlanSimulation:
         # 将图像叠加到已有的场景中
         cur_scene_array = np.row_stack((cur_scene_array, point_array))
         self.__cur_scene.points = o3d.utility.Vector3dVector(cur_scene_array)
-        o3d.visualization.draw_geometries([self.__cur_scene])
+        # o3d.visualization.draw_geometries([self.__cur_scene])
+        ros_cloud = convert_cloud_point_open3d_to_ros(self.__cur_scene, "map")
+        self.cur_scene_pub.publish(ros_cloud)
 
 
 def main():
