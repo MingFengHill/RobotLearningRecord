@@ -13,7 +13,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 
 
 # https://github.com/felixchenfy/open3d_ros_pointcloud_conversion/blob/master/lib_cloud_conversion_between_Open3D_and_ROS.py
-def convert_cloud_point_open3d_to_ros(open3d_cloud, frame_id="map"):
+def cloud_points_open3d_to_ros(open3d_cloud, frame_id="world"):
     """ open3d点云转ROS格式 """
     fields = [PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
               PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
@@ -21,14 +21,25 @@ def convert_cloud_point_open3d_to_ros(open3d_cloud, frame_id="map"):
     header = Header()
     header.stamp = rospy.Time.now()
     header.frame_id = frame_id
-    point_array = np.asarray(open3d_cloud.points)
+    points_array = np.asarray(open3d_cloud.points)
 
-    return pc2.create_cloud(header, fields, point_array)
+    return pc2.create_cloud(header, fields, points_array)
+
+
+def numpy_array_to_ros_cloud_points(points_array, frame_id="world"):
+    """ numpy数组转ROS点云格式 """
+    fields = [PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+              PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+              PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1)]
+    header = Header()
+    header.stamp = rospy.Time.now()
+    header.frame_id = frame_id
+
+    return pc2.create_cloud(header, fields, points_array)
 
 
 class CloudPointPubThread(Thread):
     """ 点云发布子线程 """
-
     def __init__(self, robot, camera2end):
         Thread.__init__(self)
         self.robot = robot
@@ -41,10 +52,26 @@ class CloudPointPubThread(Thread):
         image_id = 0
         while not rospy.is_shutdown():
             rate.sleep()
+            # 获取点云
             ret, open3d_cloud = self.robot.get_point_cloud()
+            end2base, _, _ = self.robot.get_end2base_matrix()
             if ret == ur5.ur5_return_error:
                 continue
-            ros_cloud = convert_cloud_point_open3d_to_ros(open3d_cloud, "map")
+
+            # 图像坐标系 --> base坐标系
+            points_array = np.asarray(open3d_cloud.points)
+            print("points_array raw ndim: {}, points_array shape: {}".format(points_array.ndim, points_array.shape))
+            points_array = points_array.T
+            points_array = np.row_stack((points_array, [1 for _ in range(points_array.shape[1])]))
+            points_array = np.matrix(points_array)
+            end2base = np.matrix(end2base)
+            points_array = end2base * self.camera2end * points_array
+            points_array = np.array(points_array)
+            points_array = np.delete(points_array, 3, 0)
+            points_array = points_array.T
+
+            # numpy数组 --> ROS点云
+            ros_cloud = numpy_array_to_ros_cloud_points(points_array)
             self.cloud_point_pub.publish(ros_cloud)
             print("[INFO] pub cloud point id: {}".format(image_id))
             image_id += 1
@@ -119,25 +146,25 @@ class MotionPlanSimulation:
         if ret == ur5.ur5_return_error:
             return
         # o3d.visualization.draw_geometries([point_cloud])
-        # point_array ndim: 2, point_array shape: (307200, 3)
-        point_array = np.asarray(point_cloud.points)
-        print("point_array raw ndim: {}, point_array shape: {}".format(point_array.ndim, point_array.shape))
-        point_array = point_array.T
-        point_array = np.row_stack((point_array, [1 for _ in range(point_array.shape[1])]))
-        point_array = np.matrix(point_array)
+        # points_array ndim: 2, points_array shape: (307200, 3)
+        points_array = np.asarray(point_cloud.points)
+        print("points_array raw ndim: {}, points_array shape: {}".format(points_array.ndim, points_array.shape))
+        points_array = points_array.T
+        points_array = np.row_stack((points_array, [1 for _ in range(points_array.shape[1])]))
+        points_array = np.matrix(points_array)
         end2base, _, _ = self.robot.get_end2base_matrix()
         end2base = np.matrix(end2base)
         # 图像坐标系 --> base坐标系
-        point_array = end2base * self.__camera2end * point_array
-        point_array = np.array(point_array)
-        point_array = np.delete(point_array, 3, 0)
-        point_array = point_array.T
+        points_array = end2base * self.__camera2end * points_array
+        points_array = np.array(points_array)
+        points_array = np.delete(points_array, 3, 0)
+        points_array = points_array.T
         cur_scene_array = np.asarray(self.__cur_scene.points)
         # 将图像叠加到已有的场景中
-        cur_scene_array = np.row_stack((cur_scene_array, point_array))
+        cur_scene_array = np.row_stack((cur_scene_array, points_array))
         self.__cur_scene.points = o3d.utility.Vector3dVector(cur_scene_array)
         # o3d.visualization.draw_geometries([self.__cur_scene])
-        ros_cloud = convert_cloud_point_open3d_to_ros(self.__cur_scene, "map")
+        ros_cloud = cloud_points_open3d_to_ros(self.__cur_scene)
         self.cur_scene_pub.publish(ros_cloud)
 
 
