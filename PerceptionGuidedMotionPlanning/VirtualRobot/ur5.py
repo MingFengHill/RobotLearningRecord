@@ -4,6 +4,7 @@ import numpy as np
 import open3d as o3d
 import vrep
 import cv2
+import threading
 
 ur5_return_ok = 0x000000
 ur5_return_error = 0x000001
@@ -16,6 +17,7 @@ class UR5Robot:
         self.JOINT_NAME = "UR5_joint"
         self.CAMERA_RGB_NAME = "kinect_rgb"
         self.CAMERA_DEPTH_NAME = "kinect_depth"
+        self.move_lock = threading.RLock()
         self.__joint_handles = [0 for _ in range(6)]
         self.__current_joint_angle = [0 for _ in range(6)]
 
@@ -151,9 +153,18 @@ class UR5Robot:
         if self.__client_id != -1:
             vrep.simxFinish(self.__client_id)
 
-    def rotate_joint(self, joint_id, angle):
+    def rotate_joint_no_dynamic(self, joint_id, angle):
+        res = vrep.simxSetJointPosition(self.__client_id, self.__joint_handles[joint_id],
+                                        (self.__current_joint_angle[joint_id] + angle) / (180 / math.pi),
+                                        vrep.simx_opmode_blocking)
+        if res != vrep.simx_return_ok:
+            print("[ERRO] get joint position error, return code: ", res)
+            return
+        self.__current_joint_angle[joint_id] += angle
+
+    def rotate_joint_dynamic(self, joint_id, angle):
         res = vrep.simxSetJointTargetPosition(self.__client_id, self.__joint_handles[joint_id],
-                                              (self.__current_joint_angle[joint_id] - angle) / (180 / math.pi),
+                                              (self.__current_joint_angle[joint_id] + angle) / (180 / math.pi),
                                               vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get joint position error, return code: ", res)

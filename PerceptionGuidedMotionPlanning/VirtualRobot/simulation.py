@@ -53,8 +53,10 @@ class CloudPointPubThread(Thread):
         while not rospy.is_shutdown():
             rate.sleep()
             # 获取点云
+            self.robot.move_lock.acquire()
             ret, open3d_cloud = self.robot.get_point_cloud()
             end2base, _, _ = self.robot.get_end2base_matrix()
+            self.robot.move_lock.release()
             if ret == ur5.ur5_return_error:
                 continue
 
@@ -78,7 +80,7 @@ class CloudPointPubThread(Thread):
 
 
 class MotionPlanSimulation:
-    def __init__(self, display_image=False):
+    def __init__(self, display_image=False, enable_dynamic=False):
         pygame.init()
         rospy.init_node('MotionPlanSimulation', anonymous=True)
         self.screen = pygame.display.set_mode((300, 300))
@@ -88,6 +90,7 @@ class MotionPlanSimulation:
         self.cur_point_number = 0
         # 是否显示中间过程的图像
         self.__display_image = display_image
+        self.__enable_dynamic = enable_dynamic
         # 深度相机手眼标定的结果
         self.__camera2end = np.matrix([[-0.0003, 1.0000, 0.0006, 0.0960],
                                        [-1.0000, -0.0003, 0.0006, -0.0140],
@@ -102,6 +105,14 @@ class MotionPlanSimulation:
     def __del__(self):
         self.__cloud_point_pub_thr.join()
 
+    def rotate_robot_joint(self, joint_id, angle):
+        self.robot.move_lock.acquire()
+        if self.__enable_dynamic:
+            self.robot.rotate_joint_dynamic(joint_id, angle)
+        else:
+            self.robot.rotate_joint_no_dynamic(joint_id, angle)
+        self.robot.move_lock.release()
+
     def run_loop(self):
         while (True):
             key_press = pygame.key.get_pressed()
@@ -112,29 +123,29 @@ class MotionPlanSimulation:
                     if event.key == pygame.K_p:
                         sys.exit()
                     elif event.key == pygame.K_q:
-                        self.robot.rotate_joint(0, self.step)
+                        self.rotate_robot_joint(0, self.step)
                     elif event.key == pygame.K_w:
-                        self.robot.rotate_joint(0, -self.step)
+                        self.rotate_robot_joint(0, -self.step)
                     elif event.key == pygame.K_a:
-                        self.robot.rotate_joint(1, self.step)
+                        self.rotate_robot_joint(1, self.step)
                     elif event.key == pygame.K_s:
-                        self.robot.rotate_joint(1, -self.step)
+                        self.rotate_robot_joint(1, -self.step)
                     elif event.key == pygame.K_z:
-                        self.robot.rotate_joint(2, self.step)
+                        self.rotate_robot_joint(2, self.step)
                     elif event.key == pygame.K_x:
-                        self.robot.rotate_joint(2, -self.step)
+                        self.rotate_robot_joint(2, -self.step)
                     elif event.key == pygame.K_e:
-                        self.robot.rotate_joint(3, self.step)
+                        self.rotate_robot_joint(3, self.step)
                     elif event.key == pygame.K_r:
-                        self.robot.rotate_joint(3, -self.step)
+                        self.rotate_robot_joint(3, -self.step)
                     elif event.key == pygame.K_d:
-                        self.robot.rotate_joint(4, self.step)
+                        self.rotate_robot_joint(4, self.step)
                     elif event.key == pygame.K_f:
-                        self.robot.rotate_joint(4, -self.step)
+                        self.rotate_robot_joint(4, -self.step)
                     elif event.key == pygame.K_c:
-                        self.robot.rotate_joint(5, self.step)
+                        self.rotate_robot_joint(5, self.step)
                     elif event.key == pygame.K_v:
-                        self.robot.rotate_joint(5, -self.step)
+                        self.rotate_robot_joint(5, -self.step)
                     elif event.key == pygame.K_k:
                         self.simple_scene_reconstruction()
                     else:
