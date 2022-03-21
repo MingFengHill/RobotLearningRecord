@@ -60,7 +60,7 @@ class UR5Robot:
         if res != vrep.simx_return_ok:
             print("[ERRO] get depth camera handle error, return code: ", res)
 
-        res, self.__ur5_handle = vrep.simxGetObjectHandle(self.__client_id, "UR5_connection", vrep.simx_opmode_blocking)
+        res, self.__ur5_handle = vrep.simxGetObjectHandle(self.__client_id, "UR5_link7", vrep.simx_opmode_blocking)
         if res != vrep.simx_return_ok:
             print("[ERRO] get ur5 handle error, return code: ", res)
 
