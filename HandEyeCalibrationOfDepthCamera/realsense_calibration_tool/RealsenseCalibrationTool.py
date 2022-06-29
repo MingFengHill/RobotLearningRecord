@@ -6,6 +6,10 @@ import cv2
 
 class CalibrationManager:
     def __init__(self):
+        self.__align = None
+        self.__depth_scale = None
+        self.__depth_sensor = None
+        self.__profile = None
         self.__device = None
         self.__pipeline_profile = None
         self.__pipeline_wrapper = None
@@ -39,12 +43,22 @@ class CalibrationManager:
             print("[ERRO] The demo requires Depth camera with Color sensor")
             exit(0)
         self.__config.enable_stream(rs.stream.depth, self.RESOLUTION_X, self.RESOLUTION_Y, rs.format.z16, 30)
-        self.__config.enable_stream(rs.stream.color, self.RESOLUTION_X, self.RESOLUTION_Y, rs.format.bgr8, 30)
+        self.__config.enable_stream(rs.stream.color, self.RESOLUTION_X, self.RESOLUTION_Y, rs.format.rgb8, 30)
 
         # Start streaming
-        self.__pipeline.start(self.__config)
+        self.__profile = self.__pipeline.start(self.__config)
 
-    def depth_image_2_points_cloud_csdn(self, depth_image, intrinsics):
+        # https://github.com/sriramn1/realsense-open3d/blob/master/d435_open3d.py
+        self.__depth_sensor = self.__profile.get_device().first_depth_sensor()
+        # Using preset HighAccuracy for recording #3 for High Accuracy
+        self.__depth_sensor.set_option(rs.option.visual_preset, 3)
+        # depth sensor's depth scale
+        self.__depth_scale = self.__depth_sensor.get_depth_scale()
+        print("[INFO] depth_scale: {}".format(self.__depth_scale))
+        align_to = rs.stream.color
+        self.__align = rs.align(align_to)
+
+    def create_points_cloud_csdn(self, depth_image, intrinsics):
         """
             covert realsense depth image to od3 points cloud [CSDN]
             https://blog.csdn.net/hongliyu_lvliyu/article/details/121816515
@@ -57,11 +71,33 @@ class CalibrationManager:
         )
         points_cloud = o3d.geometry.PointCloud.create_from_depth_image(
             o3d_depth,
-            pinhole_camera_intrinsic
+            pinhole_camera_intrinsic,
+            depth_scale=1.0 / self.__depth_scale
         )
         return points_cloud
 
-    def depth_image_2_points_cloud(self, depth_image, intrinsics):
+    def create_color_points_cloud_csdn(self, depth_image, color_image, intrinsics):
+        """
+            covert realsense depth image to od3 points cloud [CSDN]
+            https://blog.csdn.net/hongliyu_lvliyu/article/details/121816515
+        """
+        o3d_depth = o3d.geometry.Image(depth_image.copy())
+        o3d_color = o3d.geometry.Image(color_image.copy())
+        pinhole_camera_intrinsic = o3d.camera.PinholeCameraIntrinsic(
+            intrinsics.width, intrinsics.height,
+            intrinsics.fx, intrinsics.fy,
+            intrinsics.ppx, intrinsics.ppy
+        )
+        rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(
+            o3d_color,
+            o3d_depth,
+            depth_scale=1.0 / self.__depth_scale,
+            # depth_trunc=2,
+            convert_rgb_to_intensity=False)
+        points_cloud = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, pinhole_camera_intrinsic)
+        return points_cloud
+
+    def create_points_cloud(self, depth_image, intrinsics):
         # TODO: realsense采集到图像像素x和y和设置的是相反的
         resolution_x = self.RESOLUTION_Y
         resolution_y = self.RESOLUTION_X
@@ -80,11 +116,26 @@ class CalibrationManager:
         points_cloud.points = o3d.utility.Vector3dVector(point_array)
         return points_cloud
 
+    def add_color_to_point_cloud(self, cloud_point, color_image):
+        # TODO: 该函数无法正常使用
+        rgb_image = np.array(color_image, dtype=np.uint8)
+        rgb_image.resize([self.RESOLUTION_X * self.RESOLUTION_Y, 3])
+        color_array = np.zeros((self.RESOLUTION_X * self.RESOLUTION_Y, 3), dtype=np.float64)
+        for i in range(self.RESOLUTION_X * self.RESOLUTION_Y):
+            color_array[i][0] = rgb_image[i][0] / 256.0
+            color_array[i][1] = rgb_image[i][1] / 256.0
+            color_array[i][2] = rgb_image[i][2] / 256.0
+        cloud_point.colors = o3d.utility.Vector3dVector(color_array)
+
     def get_points_cloud_from_realsense(self):
         # Wait for a coherent pair of frames: depth and color
         frames = self.__pipeline.wait_for_frames()
-        depth_frame = frames.get_depth_frame()
-        color_frame = frames.get_color_frame()
+
+        # Align the depth frame to color frame
+        aligned_frames = self.__align.process(frames)
+
+        depth_frame = aligned_frames.get_depth_frame()
+        color_frame = aligned_frames.get_color_frame()
         if not depth_frame or not color_frame:
             print("[ERRO] depth frame or color frame is null")
             return
@@ -105,7 +156,7 @@ class CalibrationManager:
         print("[INFO] intrinsics.ppx: {}".format(intrinsics.ppx))
         print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
 
-        points_cloud = self.depth_image_2_points_cloud(depth_image, intrinsics)
+        points_cloud = self.create_color_points_cloud_csdn(depth_image, color_image, intrinsics)
         o3d.visualization.draw_geometries([points_cloud])
 
     def get_calibration_ball_center(self):
