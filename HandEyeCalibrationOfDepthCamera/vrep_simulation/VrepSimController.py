@@ -10,7 +10,7 @@ import open3d as o3d
 import vrep
 import cv2
 import matplotlib.pyplot as plt
-import pyransac3d as pyrsc
+# import pyransac3d as pyrsc
 import scipy.optimize as opt
 
 
@@ -384,7 +384,9 @@ class CalibrationSimulation:
         end2base, _, _ = self.robot.get_end2base_matrix()
         end2base = np.matrix(end2base)
         circle_center_base = end2base * self.__camera2end * circle_center
-        print(circle_center_base)
+        print("Positioning Error: dx:{}mm dy:{}mm dz:{}mm ----!".format((-1.0 - circle_center_base[0]) * 1000,
+                                                                        (0 - circle_center_base[1]) * 1000,
+                                                                        (0.8 - circle_center_base[2]) * 1000 - 8.5))
 
     def find_circle_center(self, point_cloud):
         labels = np.array(point_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=True))
