@@ -1,8 +1,14 @@
 import pyrealsense2 as rs
 import numpy as np
 import open3d as o3d
+import rospy
+import threading
+from sensor_msgs.msg import JointState
+from moveit_msgs.srv import GetPositionFK
+from moveit_msgs.srv import GetPositionFKRequest
+from moveit_msgs.srv import GetPositionFKResponse
+from sensor_msgs.msg import JointState
 import cv2
-
 
 class CalibrationManager:
     def __init__(self):
@@ -15,12 +21,19 @@ class CalibrationManager:
         self.__pipeline_wrapper = None
         self.__config = None
         self.__pipeline = None
+        self.__joint_state_sub = None
+        self.__compute_fk_sp = None
+        self._cur_joint_state = None
+        self.__joint_state_mtx = None
         self.RESOLUTION_X = 640
         self.RESOLUTION_Y = 480
+        self.JOINT_STATE_TOPIC = "/joint_states"
         self.realsense_init()
+        # self.ros_init()
 
     def __del__(self):
         self.__pipeline.stop()
+        # self.__compute_fk_sp.close()
 
     def realsense_init(self):
         # Create a pipeline
@@ -57,6 +70,18 @@ class CalibrationManager:
         print("[INFO] depth_scale: {}".format(self.__depth_scale))
         align_to = rs.stream.color
         self.__align = rs.align(align_to)
+
+    def get_joint_states_callback(self, msg):
+        self.__joint_state_mtx.acquire()
+        self._cur_joint_state = msg
+        self.__joint_state_mtx.release()
+
+    def ros_init(self):
+        rospy.init_node('RealSenseCalibrationTool', anonymous=True)
+        self.__joint_state_mtx = threading.Lock()
+        self.__joint_state_sub = rospy.Subscriber(self.JOINT_STATE_TOPIC, JointState, self.get_joint_states_callback)
+        self.__compute_fk_sp = rospy.ServiceProxy('/compute_fk', GetPositionFK)
+        self.__compute_fk_sp.wait_for_service()
 
     def create_points_cloud_csdn(self, depth_image, intrinsics):
         """
@@ -109,9 +134,9 @@ class CalibrationManager:
                 point_array[i * resolution_x + j][2] = depth_image[j][i] / 1000
                 # TODO: 确定为什么要对x轴取反
                 point_array[i * resolution_x + j][0] = -((j - resolution_x / 2) / focal_x) * \
-                                                            point_array[i * resolution_x + j][2]
+                                                       point_array[i * resolution_x + j][2]
                 point_array[i * resolution_x + j][1] = ((i - resolution_y / 2) / focal_x) * \
-                                                            point_array[i * resolution_x + j][2]
+                                                       point_array[i * resolution_x + j][2]
         points_cloud = o3d.geometry.PointCloud()
         points_cloud.points = o3d.utility.Vector3dVector(point_array)
         return points_cloud
@@ -158,6 +183,31 @@ class CalibrationManager:
 
         points_cloud = self.create_color_points_cloud_csdn(depth_image, color_image, intrinsics)
         o3d.visualization.draw_geometries([points_cloud])
+        o3d.io.write_point_cloud("copy_of_fragment.pcd", points_cloud)
+        # pcd = o3d.io.read_point_cloud(sample_pcd_data.path)
+
+    def get_cur_robot_pose(self):
+        self.__joint_state_mtx.acquire()
+        joint_state = self._cur_joint_state
+        self.__joint_state_mtx.release()
+        if joint_state is None:
+            print("[ERROR] joint state is None")
+            return
+        # print(str(joint_state))
+        request = GetPositionFKRequest()
+        request.header.frame_id = 'base_link'
+        request.fk_link_names = ["tool0"]
+        request.robot_state.joint_state = joint_state
+        try:
+            response = self.__compute_fk_sp.call(request)
+        except rospy.ServiceException as e:
+            print("[ERROR] call compute fk failed")
+            return
+        # print(str(response))
+        print("[INFO] position: {} {} {}, orientation: {} {} {} {}".format(
+              response.pose_stamped[0].pose.position.x, response.pose_stamped[0].pose.position.y, response.pose_stamped[0].pose.position.z,
+              response.pose_stamped[0].pose.orientation.x, response.pose_stamped[0].pose.orientation.y,
+              response.pose_stamped[0].pose.orientation.z, response.pose_stamped[0].pose.orientation.w))
 
     def get_calibration_ball_center(self):
         pass
@@ -167,13 +217,20 @@ class CalibrationManager:
 
     def data_acquisition(self):
         self.get_points_cloud_from_realsense()
+        # self.get_cur_robot_pose()'
+
+    def read_iamge(self):
+        pcd = o3d.io.read_point_cloud("./copy_of_fragment.pcd")
+        o3d.visualization.draw_geometries([pcd])
 
     def run_loop(self):
         while True:
             option = input("请输入选项中的数字：1.采集数据并存储；2.退出程序。")
             if option == '1':
                 self.data_acquisition()
-            elif option == '2':
+            if option == '2':
+                self.read_iamge()
+            elif option == '3':
                 print("bye bye~")
                 break
             else:
