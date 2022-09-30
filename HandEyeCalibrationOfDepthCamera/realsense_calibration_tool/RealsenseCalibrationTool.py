@@ -1,3 +1,4 @@
+import os
 import pyrealsense2 as rs
 import numpy as np
 import open3d as o3d
@@ -9,6 +10,7 @@ from moveit_msgs.srv import GetPositionFKRequest
 from moveit_msgs.srv import GetPositionFKResponse
 from sensor_msgs.msg import JointState
 import cv2
+import scipy.optimize as opt
 
 
 def quaternion_to_rotation_matrix(q):
@@ -49,6 +51,7 @@ class CalibrationManager:
         self.__compute_fk_sp = None
         self._cur_joint_state = None
         self.__joint_state_mtx = None
+        self.__image_num = 1
         self.RESOLUTION_X = 640
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
@@ -208,8 +211,7 @@ class CalibrationManager:
 
         points_cloud = self.create_color_points_cloud_csdn(depth_image, color_image, intrinsics)
         o3d.visualization.draw_geometries([points_cloud])
-        o3d.io.write_point_cloud("copy_of_fragment.pcd", points_cloud)
-        # pcd = o3d.io.read_point_cloud(sample_pcd_data.path)
+        return points_cloud
 
     def get_cur_robot_pose(self):
         self.__joint_state_mtx.acquire()
@@ -245,36 +247,97 @@ class CalibrationManager:
                     f.write(str(base2end[i][j]) + " ")
             f.write("\n")
 
-    def get_calibration_ball_center(self):
-        pass
-
-    def get_joint_state(self):
-        pass
-
     def data_acquisition(self):
-        # self.get_points_cloud_from_realsense()
-        # self.get_cur_robot_pose()
-        pass
+        point_cloud = self.get_points_cloud_from_realsense()
+        ret, sphere_center = self.find_sphere_center(point_cloud)
+        if ret is False:
+            print("[ERROR] can not find circle center")
+            return
+        option = input("请输入选项中的数字：\n1.保存；\n2.不保存。\n输入:")
+        if option == 1:
+            with open("circle_center.txt", "a+", encoding="utf-8") as f:
+                for i in range(len(sphere_center)):
+                    f.write("{:.14f}".format(sphere_center[i]) + " ")
+                f.write("\n")
+            isExist = os.path.exists("./image/")
+            if isExist is False:
+                os.mkdir(r"./image/")
+            image_name = "./image/image_" + str(self.__image_num) + ".pcd"
+            o3d.io.write_point_cloud(image_name, point_cloud)
+            self.get_cur_robot_pose()
+            self.__image_num += 1
 
     def read_iamge(self, path):
         pcd = o3d.io.read_point_cloud(path)
         o3d.visualization.draw_geometries([pcd])
 
-    def find_circle_center(self, path):
-        pass
+    def spherrors(self, para, points):
+        """球面拟合误差"""
+        a, b, c, r = para
+        x = points[0, :]
+        y = points[1, :]
+        z = points[2, :]
+        return pow((x - a), 2) + pow((y - b), 2) + pow((z - c), 2) - pow(r, 2)
+
+    def sphere_fit(self, point):
+        """线性最小二乘拟合"""
+        tparas = opt.leastsq(self.spherrors, [1, 1, 1, 0.06], point.T, full_output=1)
+        paras = tparas[0]
+        sphere_r = abs(paras[3])
+        sphere_o = [paras[0], paras[1], paras[2]]
+        # 计算球度误差
+        es = np.mean(np.abs(tparas[2]['fvec'])) / paras[3]  # 'fvec'即为spherrors的值
+        return sphere_o, sphere_r, es
+
+    def find_sphere_center(self, point_cloud):
+        labels = np.array(point_cloud.cluster_dbscan(eps=0.08, min_points=100, print_progress=True))
+        max_label = labels.max()
+        print(f"[INFO] point cloud has {max_label + 1} clusters")
+        point_array = np.asarray(point_cloud.points)
+        print("[INFO] labels shape:", labels.shape)
+        print("[INFO] point_array shape:", point_array.shape)
+
+        for i in range(max_label + 1):
+            mask = labels == i
+            section_array = point_array[mask]
+            cloud_point_section = o3d.geometry.PointCloud()
+            cloud_point_section.points = o3d.utility.Vector3dVector(section_array)
+
+            # 最小二乘法拟合球心
+            sphere_center, sphere_radius, es = self.sphere_fit(section_array)
+            print("[INFO] sphere fit error: {}".format(es))
+            if np.abs(es) > 0.01:
+                continue
+
+            print("[INFO] label {} center: {} radius: {}".format(i, sphere_center, sphere_radius))
+            if 0.08 > sphere_radius > 0.05:
+                # 可视化拟合结果
+                mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_radius)
+                mesh_circle.compute_vertex_normals()
+                mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
+                mesh_circle = mesh_circle.translate((sphere_center[0], sphere_center[1], sphere_center[2]))
+                o3d.visualization.draw_geometries([point_cloud, mesh_circle])
+                return True, sphere_center
+
+        return False, []
+
+    def find_sphere_center_from_file(self, path):
+        point_cloud = o3d.io.read_point_cloud(path)
+        self.find_sphere_center(point_cloud)
 
     def run_loop(self):
         while True:
-            option = input("Hello~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n2.查看点云文件；\n4.退出程序。")
+            option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n"
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n8.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
-                path = input("请输入文件路径。")
+                path = input("请输入文件路径:")
                 self.read_iamge(path)
             elif option == '3':
-                path = input("请输入文件路径。")
-                self.find_circle_center(path)
-            elif option == '4':
+                path = input("请输入文件路径:")
+                self.find_sphere_center_from_file(path)
+            elif option == '8':
                 print("bye bye~")
                 break
             else:
