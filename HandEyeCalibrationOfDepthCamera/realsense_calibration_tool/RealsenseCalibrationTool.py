@@ -10,6 +10,30 @@ from moveit_msgs.srv import GetPositionFKResponse
 from sensor_msgs.msg import JointState
 import cv2
 
+
+def quaternion_to_rotation_matrix(q):
+    """ 四元数转旋转矩阵 """
+    x = q[0]
+    y = q[1]
+    z = q[2]
+    w = q[3]
+    # 检查四元数是否单位化
+    if (x ** 2 + y ** 2 + z ** 2 + w ** 2) != 1:
+        print("[WARR] Not a unit quaternion: {}".format(x ** 2 + y ** 2 + z ** 2 + w ** 2))
+    # 四元数转旋转矩阵
+    # https://zhuanlan.zhihu.com/p/45404840
+    r11 = 1 - 2 * y * y - 2 * z * z
+    r12 = 2 * x * y - 2 * w * z
+    r13 = 2 * x * z + 2 * w * y
+    r21 = 2 * x * y + 2 * w * z
+    r22 = 1 - 2 * x * x - 2 * z * z
+    r23 = 2 * y * z - 2 * w * x
+    r31 = 2 * x * z - 2 * w * y
+    r32 = 2 * y * z + 2 * w * x
+    r33 = 1 - 2 * x * x - 2 * y * y
+    return [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]
+
+
 class CalibrationManager:
     def __init__(self):
         self.__align = None
@@ -28,12 +52,13 @@ class CalibrationManager:
         self.RESOLUTION_X = 640
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
-        self.realsense_init()
+        # self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        self.__pipeline.stop()
+        # self.__pipeline.stop()
         # self.__compute_fk_sp.close()
+        pass
 
     def realsense_init(self):
         # Create a pipeline
@@ -195,8 +220,8 @@ class CalibrationManager:
             return
         # print(str(joint_state))
         request = GetPositionFKRequest()
-        request.header.frame_id = 'base_link'
-        request.fk_link_names = ["tool0"]
+        # request.header.frame_id = 'base_link'
+        request.fk_link_names = ["ee_link"]
         request.robot_state.joint_state = joint_state
         try:
             response = self.__compute_fk_sp.call(request)
@@ -208,6 +233,17 @@ class CalibrationManager:
               response.pose_stamped[0].pose.position.x, response.pose_stamped[0].pose.position.y, response.pose_stamped[0].pose.position.z,
               response.pose_stamped[0].pose.orientation.x, response.pose_stamped[0].pose.orientation.y,
               response.pose_stamped[0].pose.orientation.z, response.pose_stamped[0].pose.orientation.w))
+        q = [response.pose_stamped[0].pose.orientation.x, response.pose_stamped[0].pose.orientation.y,
+             response.pose_stamped[0].pose.orientation.z, response.pose_stamped[0].pose.orientation.w]
+        rotation_matrix = quaternion_to_rotation_matrix(q)
+        base2end = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], response.pose_stamped[0].pose.position.x],
+                     [rotation_matrix[1][0], rotation_matrix[1][1], rotation_matrix[1][2], response.pose_stamped[0].pose.position.y],
+                     [rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2], response.pose_stamped[0].pose.position.z]])
+        with open("base2end_matrix.txt", "a+", encoding="utf-8") as f:
+            for i in range(3):
+                for j in range(4):
+                    f.write(str(base2end[i][j]) + " ")
+            f.write("\n")
 
     def get_calibration_ball_center(self):
         pass
@@ -216,21 +252,29 @@ class CalibrationManager:
         pass
 
     def data_acquisition(self):
-        self.get_points_cloud_from_realsense()
-        # self.get_cur_robot_pose()'
+        # self.get_points_cloud_from_realsense()
+        # self.get_cur_robot_pose()
+        pass
 
-    def read_iamge(self):
-        pcd = o3d.io.read_point_cloud("./copy_of_fragment.pcd")
+    def read_iamge(self, path):
+        pcd = o3d.io.read_point_cloud(path)
         o3d.visualization.draw_geometries([pcd])
+
+    def find_circle_center(self, path):
+        pass
 
     def run_loop(self):
         while True:
-            option = input("请输入选项中的数字：1.采集数据并存储；2.退出程序。")
+            option = input("Hello~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n2.查看点云文件；\n4.退出程序。")
             if option == '1':
                 self.data_acquisition()
-            if option == '2':
-                self.read_iamge()
+            elif option == '2':
+                path = input("请输入文件路径。")
+                self.read_iamge(path)
             elif option == '3':
+                path = input("请输入文件路径。")
+                self.find_circle_center(path)
+            elif option == '4':
                 print("bye bye~")
                 break
             else:
