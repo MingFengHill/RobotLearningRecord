@@ -200,8 +200,8 @@ class CalibrationManager:
         color_colormap_dim = color_image.shape
         profile = frames.get_profile()
         intrinsics = profile.as_video_stream_profile().get_intrinsics()
-        print("[INFO] depth image from realsense shape: {}".format(depth_colormap_dim))
-        print("[INFO] color image from realsense shape: {}".format(color_colormap_dim))
+        print("[INFO] depth image from realsense shape: {}, type: {}".format(depth_colormap_dim, depth_image.dtype))
+        print("[INFO] color image from realsense shape: {}, type: {}".format(color_colormap_dim, depth_image.dtype))
         print("[INFO] intrinsics.width: {}".format(intrinsics.width))
         print("[INFO] intrinsics.height: {}".format(intrinsics.height))
         print("[INFO] intrinsics.fx: {}".format(intrinsics.fx))
@@ -310,7 +310,7 @@ class CalibrationManager:
                 continue
 
             print("[INFO] label {} center: {} radius: {}".format(i, sphere_center, sphere_radius))
-            if 0.08 > sphere_radius > 0.05:
+            if 0.080 > sphere_radius > 0.065:
                 # 可视化拟合结果
                 mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_radius)
                 mesh_circle.compute_vertex_normals()
