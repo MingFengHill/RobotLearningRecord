@@ -297,7 +297,12 @@ class CalibrationManager:
         # OpenCV 需要转换成BGR格式才能存储
         color_image_bgr = color_image[..., [2, 1, 0]]
         cv2.imwrite(self.IMAGE_PATH + "color_" + str(self.__image_num) + ".jpg", color_image_bgr)
-        cv2.imwrite(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".jpg", depth_image)
+        # cv2.imwrite(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".jpg", depth_image)
+        np.save(self.IMAGE_PATH + "depth_" + str(self.__image_num), depth_image)
+        depth_image_from_npy = np.load(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".npy")
+        if np.array_equal(depth_image, depth_image_from_npy):
+            print("[INFO] depth_image_from_npy equal depth_image")
+            pass
         self.__image_num += 1
 
     def spherrors(self, para, points):
