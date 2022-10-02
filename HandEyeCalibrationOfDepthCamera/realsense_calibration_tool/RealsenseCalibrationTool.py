@@ -4,6 +4,7 @@ import numpy as np
 import open3d as o3d
 import rospy
 import threading
+import time
 from sensor_msgs.msg import JointState
 from moveit_msgs.srv import GetPositionFK
 from moveit_msgs.srv import GetPositionFKRequest
@@ -36,6 +37,22 @@ def quaternion_to_rotation_matrix(q):
     return [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]
 
 
+def transform_matrix_inverse(base2end):
+    base2end.append([0, 0, 0, 1])
+    base2end = np.matrix(base2end)
+    end2base_matrix = np.linalg.inv(base2end)
+    print(end2base_matrix)
+    end2base = ([[end2base_matrix[0][0], end2base_matrix[0][1], end2base_matrix[0][2], end2base_matrix[0][3]],
+                 [end2base_matrix[1][0], end2base_matrix[1][1], end2base_matrix[1][2], end2base_matrix[0][3]],
+                 [end2base_matrix[2][0], end2base_matrix[2][1], end2base_matrix[2][2], end2base_matrix[0][3]]])
+    return end2base
+
+
+def read_iamge(path):
+    pcd = o3d.io.read_point_cloud(path)
+    o3d.visualization.draw_geometries([pcd])
+
+
 class CalibrationManager:
     def __init__(self):
         self.__align = None
@@ -55,11 +72,12 @@ class CalibrationManager:
         self.RESOLUTION_X = 640
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
-        # self.realsense_init()
+        self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
+        self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        # self.__pipeline.stop()
+        self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
@@ -129,7 +147,7 @@ class CalibrationManager:
         )
         return points_cloud
 
-    def create_color_points_cloud_csdn(self, depth_image, color_image, intrinsics):
+    def create_points_cloud_with_color_csdn(self, depth_image, color_image, intrinsics):
         """
             covert realsense depth image to od3 points cloud [CSDN]
             https://blog.csdn.net/hongliyu_lvliyu/article/details/121816515
@@ -150,7 +168,7 @@ class CalibrationManager:
         points_cloud = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, pinhole_camera_intrinsic)
         return points_cloud
 
-    def create_points_cloud(self, depth_image, intrinsics):
+    def create_points_cloud_with_color_myself(self, depth_image, color_image, intrinsics):
         # TODO: realsense采集到图像像素x和y和设置的是相反的
         resolution_x = self.RESOLUTION_Y
         resolution_y = self.RESOLUTION_X
@@ -167,6 +185,7 @@ class CalibrationManager:
                                                        point_array[i * resolution_x + j][2]
         points_cloud = o3d.geometry.PointCloud()
         points_cloud.points = o3d.utility.Vector3dVector(point_array)
+        self.add_color_to_point_cloud(points_cloud, color_image)
         return points_cloud
 
     def add_color_to_point_cloud(self, cloud_point, color_image):
@@ -209,9 +228,10 @@ class CalibrationManager:
         print("[INFO] intrinsics.ppx: {}".format(intrinsics.ppx))
         print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
 
-        points_cloud = self.create_color_points_cloud_csdn(depth_image, color_image, intrinsics)
+        # points_cloud = self.create_points_cloud_with_color_csdn(depth_image, color_image, intrinsics)
+        points_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
         o3d.visualization.draw_geometries([points_cloud])
-        return points_cloud
+        return points_cloud, color_image, depth_image
 
     def get_cur_robot_pose(self):
         self.__joint_state_mtx.acquire()
@@ -241,14 +261,11 @@ class CalibrationManager:
         base2end = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], response.pose_stamped[0].pose.position.x],
                      [rotation_matrix[1][0], rotation_matrix[1][1], rotation_matrix[1][2], response.pose_stamped[0].pose.position.y],
                      [rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2], response.pose_stamped[0].pose.position.z]])
-        with open("base2end_matrix.txt", "a+", encoding="utf-8") as f:
-            for i in range(3):
-                for j in range(4):
-                    f.write(str(base2end[i][j]) + " ")
-            f.write("\n")
+        end2base = transform_matrix_inverse(base2end)
+        return end2base
 
     def data_acquisition(self):
-        point_cloud = self.get_points_cloud_from_realsense()
+        point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
         ret, sphere_center = self.find_sphere_center(point_cloud)
         if ret is False:
             print("[ERROR] can not find circle center")
@@ -259,17 +276,29 @@ class CalibrationManager:
                 for i in range(len(sphere_center)):
                     f.write("{:.14f}".format(sphere_center[i]) + " ")
                 f.write("\n")
-            isExist = os.path.exists("./image/")
-            if isExist is False:
-                os.mkdir(r"./image/")
-            image_name = "./image/image_" + str(self.__image_num) + ".pcd"
-            o3d.io.write_point_cloud(image_name, point_cloud)
-            self.get_cur_robot_pose()
-            self.__image_num += 1
+            end2base = self.get_cur_robot_pose()
+            with open("base2end_matrix.txt", "a+", encoding="utf-8") as f:
+                for i in range(3):
+                    for j in range(4):
+                        f.write(str(end2base[i][j]) + " ")
+                f.write("\n")
+            self.save_image(point_cloud, color_image, depth_image)
 
-    def read_iamge(self, path):
-        pcd = o3d.io.read_point_cloud(path)
-        o3d.visualization.draw_geometries([pcd])
+    def take_photo(self):
+        point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
+        self.save_image(point_cloud, color_image, depth_image)
+
+    def save_image(self, point_cloud, color_image, depth_image):
+        is_exist = os.path.exists(self.IMAGE_PATH)
+        if is_exist is False:
+            os.mkdir(self.IMAGE_PATH)
+        image_name = self.IMAGE_PATH + "point_cloud_" + str(self.__image_num) + ".pcd"
+        o3d.io.write_point_cloud(image_name, point_cloud)
+        # OpenCV 需要转换成BGR格式才能存储
+        color_image_bgr = color_image[..., [2, 1, 0]]
+        cv2.imwrite(self.IMAGE_PATH + "color_" + str(self.__image_num) + ".jpg", color_image_bgr)
+        cv2.imwrite(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".jpg", depth_image)
+        self.__image_num += 1
 
     def spherrors(self, para, points):
         """球面拟合误差"""
@@ -328,15 +357,18 @@ class CalibrationManager:
     def run_loop(self):
         while True:
             option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n"
-                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n8.退出程序。\n输入:")
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.拍摄并存储本地；"
+                           "\n8.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
                 path = input("请输入文件路径:")
-                self.read_iamge(path)
+                read_iamge(path)
             elif option == '3':
                 path = input("请输入文件路径:")
                 self.find_sphere_center_from_file(path)
+            elif option == '4':
+                self.take_photo()
             elif option == '8':
                 print("bye bye~")
                 break
