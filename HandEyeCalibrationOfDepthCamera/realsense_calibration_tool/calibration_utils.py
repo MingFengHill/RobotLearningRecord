@@ -2,6 +2,58 @@ import numpy as np
 import open3d as o3d
 
 
+# urdfpy
+def matrix_to_rpy(R, solution=1):
+    """Convert a 3x3 transform matrix to roll-pitch-yaw coordinates.
+
+    The roll-pitchRyaw axes in a typical URDF are defined as a
+    rotation of ``r`` radians around the x-axis followed by a rotation of
+    ``p`` radians around the y-axis followed by a rotation of ``y`` radians
+    around the z-axis. These are the Z1-Y2-X3 Tait-Bryan angles. See
+    Wikipedia_ for more information.
+
+    .. _Wikipedia: https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
+
+    There are typically two possible roll-pitch-yaw coordinates that could have
+    created a given rotation matrix. Specify ``solution=1`` for the first one
+    and ``solution=2`` for the second one.
+
+    Parameters
+    ----------
+    R : (3,3) float
+        A 3x3 homogenous rotation matrix.
+    solution : int
+        Either 1 or 2, indicating which solution to return.
+
+    Returns
+    -------
+    coords : (3,) float
+        The roll-pitch-yaw coordinates in order (x-rot, y-rot, z-rot).
+    """
+    R = np.asanyarray(R, dtype=np.float64)
+    r = 0.0
+    p = 0.0
+    y = 0.0
+
+    if np.abs(R[2,0]) >= 1.0 - 1e-12:
+        y = 0.0
+        if R[2,0] < 0:
+            p = np.pi / 2
+            r = np.arctan2(R[0,1], R[0,2])
+        else:
+            p = -np.pi / 2
+            r = np.arctan2(-R[0,1], -R[0,2])
+    else:
+        if solution == 1:
+            p = -np.arcsin(R[2,0])
+        else:
+            p = np.pi + np.arcsin(R[2,0])
+        r = np.arctan2(R[2,1] / np.cos(p), R[2,2] / np.cos(p))
+        y = np.arctan2(R[1,0] / np.cos(p), R[0,0] / np.cos(p))
+
+    return np.array([r, p, y], dtype=np.float64)
+
+
 def quaternion_to_rotation_matrix(q):
     """ 四元数转旋转矩阵 """
     x = q[0]

@@ -28,7 +28,7 @@ class CalibrationManager:
         self.__pipeline = None
         self.__joint_state_sub = None
         self.__compute_fk_sp = None
-        self._cur_joint_state = None
+        self.__cur_joint_state = None
         self.__joint_state_mtx = None
         self.__image_num = 1
         self.RESOLUTION_X = 640
@@ -81,7 +81,7 @@ class CalibrationManager:
 
     def get_joint_states_callback(self, msg):
         self.__joint_state_mtx.acquire()
-        self._cur_joint_state = msg
+        self.__cur_joint_state = msg
         self.__joint_state_mtx.release()
 
     def ros_init(self):
@@ -197,7 +197,7 @@ class CalibrationManager:
 
     def get_cur_robot_pose(self):
         self.__joint_state_mtx.acquire()
-        joint_state = self._cur_joint_state
+        joint_state = self.__cur_joint_state
         self.__joint_state_mtx.release()
         if joint_state is None:
             print("[ERROR] joint state is None")
