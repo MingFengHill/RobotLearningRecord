@@ -12,45 +12,7 @@ from moveit_msgs.srv import GetPositionFKResponse
 from sensor_msgs.msg import JointState
 import cv2
 import scipy.optimize as opt
-
-
-def quaternion_to_rotation_matrix(q):
-    """ 四元数转旋转矩阵 """
-    x = q[0]
-    y = q[1]
-    z = q[2]
-    w = q[3]
-    # 检查四元数是否单位化
-    if (x ** 2 + y ** 2 + z ** 2 + w ** 2) != 1:
-        print("[WARR] Not a unit quaternion: {}".format(x ** 2 + y ** 2 + z ** 2 + w ** 2))
-    # 四元数转旋转矩阵
-    # https://zhuanlan.zhihu.com/p/45404840
-    r11 = 1 - 2 * y * y - 2 * z * z
-    r12 = 2 * x * y - 2 * w * z
-    r13 = 2 * x * z + 2 * w * y
-    r21 = 2 * x * y + 2 * w * z
-    r22 = 1 - 2 * x * x - 2 * z * z
-    r23 = 2 * y * z - 2 * w * x
-    r31 = 2 * x * z - 2 * w * y
-    r32 = 2 * y * z + 2 * w * x
-    r33 = 1 - 2 * x * x - 2 * y * y
-    return [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]
-
-
-def transform_matrix_inverse(base2end):
-    base2end.append([0, 0, 0, 1])
-    base2end = np.matrix(base2end)
-    end2base_matrix = np.linalg.inv(base2end)
-    print(end2base_matrix)
-    end2base = ([[end2base_matrix[0][0], end2base_matrix[0][1], end2base_matrix[0][2], end2base_matrix[0][3]],
-                 [end2base_matrix[1][0], end2base_matrix[1][1], end2base_matrix[1][2], end2base_matrix[0][3]],
-                 [end2base_matrix[2][0], end2base_matrix[2][1], end2base_matrix[2][2], end2base_matrix[0][3]]])
-    return end2base
-
-
-def read_iamge(path):
-    pcd = o3d.io.read_point_cloud(path)
-    o3d.visualization.draw_geometries([pcd])
+import calibration_utils as utils
 
 
 class CalibrationManager:
@@ -257,11 +219,11 @@ class CalibrationManager:
               response.pose_stamped[0].pose.orientation.z, response.pose_stamped[0].pose.orientation.w))
         q = [response.pose_stamped[0].pose.orientation.x, response.pose_stamped[0].pose.orientation.y,
              response.pose_stamped[0].pose.orientation.z, response.pose_stamped[0].pose.orientation.w]
-        rotation_matrix = quaternion_to_rotation_matrix(q)
+        rotation_matrix = utils.quaternion_to_rotation_matrix(q)
         base2end = ([[rotation_matrix[0][0], rotation_matrix[0][1], rotation_matrix[0][2], response.pose_stamped[0].pose.position.x],
                      [rotation_matrix[1][0], rotation_matrix[1][1], rotation_matrix[1][2], response.pose_stamped[0].pose.position.y],
                      [rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2], response.pose_stamped[0].pose.position.z]])
-        end2base = transform_matrix_inverse(base2end)
+        end2base = utils.transform_matrix_inverse(base2end)
         return end2base
 
     def data_acquisition(self):
@@ -297,11 +259,10 @@ class CalibrationManager:
         # OpenCV 需要转换成BGR格式才能存储
         color_image_bgr = color_image[..., [2, 1, 0]]
         cv2.imwrite(self.IMAGE_PATH + "color_" + str(self.__image_num) + ".jpg", color_image_bgr)
-        # cv2.imwrite(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".jpg", depth_image)
         np.save(self.IMAGE_PATH + "depth_" + str(self.__image_num), depth_image)
         depth_image_from_npy = np.load(self.IMAGE_PATH + "depth_" + str(self.__image_num) + ".npy")
         if np.array_equal(depth_image, depth_image_from_npy):
-            print("[INFO] depth_image_from_npy equal depth_image")
+            # print("[INFO] depth_image_from_npy equal depth_image")
             pass
         self.__image_num += 1
 
@@ -368,7 +329,7 @@ class CalibrationManager:
                 self.data_acquisition()
             elif option == '2':
                 path = input("请输入文件路径:")
-                read_iamge(path)
+                utils.read_iamge(path)
             elif option == '3':
                 path = input("请输入文件路径:")
                 self.find_sphere_center_from_file(path)
