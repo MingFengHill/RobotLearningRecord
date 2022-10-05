@@ -54,6 +54,20 @@ def matrix_to_rpy(R, solution=1):
     return np.array([r, p, y], dtype=np.float64)
 
 
+def rotation_matrix_2_rpy():
+    rotation_matrix = []
+    with open('rotation_matrix.txt', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            rotation_matrix.append(list(map(float, line.split(' '))))
+    if len(rotation_matrix) != 3 or len(rotation_matrix[0]) != 3:
+        print("[ERROR] 矩阵不是3x3")
+        return
+    rotation_matrix = np.asarray(rotation_matrix)
+    angles = matrix_to_rpy(rotation_matrix)
+    print("R P Y: {}".format(angles))
+
+
 def quaternion_to_rotation_matrix(q):
     """ 四元数转旋转矩阵 """
     x = q[0]

@@ -35,11 +35,11 @@ class CalibrationManager:
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
         self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
-        self.realsense_init()
+        # self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        self.__pipeline.stop()
+        # self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
@@ -323,8 +323,8 @@ class CalibrationManager:
     def run_loop(self):
         while True:
             option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n"
-                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.拍摄并存储本地；"
-                           "\n8.退出程序。\n输入:")
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.拍摄并存储本地；\n"
+                           "5.旋转矩阵转RPY\nq.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
@@ -335,7 +335,9 @@ class CalibrationManager:
                 self.find_sphere_center_from_file(path)
             elif option == '4':
                 self.take_photo()
-            elif option == '8':
+            elif option == '5':
+                utils.rotation_matrix_2_rpy()
+            elif option == 'q':
                 print("bye bye~")
                 break
             else:
