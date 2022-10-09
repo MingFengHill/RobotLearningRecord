@@ -35,11 +35,11 @@ class CalibrationManager:
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
         self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
-        # self.realsense_init()
+        self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        # self.__pipeline.stop()
+        self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
@@ -132,16 +132,16 @@ class CalibrationManager:
 
     def create_points_cloud_with_color_myself(self, depth_image, color_image, intrinsics):
         # TODO: realsense采集到图像像素x和y和设置的是相反的
-        resolution_x = self.RESOLUTION_Y
-        resolution_y = self.RESOLUTION_X
+        resolution_x = self.RESOLUTION_X
+        resolution_y = self.RESOLUTION_Y
 
         point_array = np.zeros((resolution_x * resolution_y, 3))
         focal_x = intrinsics.fx
         for i in range(resolution_y):
             for j in range(resolution_x):
-                point_array[i * resolution_x + j][2] = depth_image[j][i] / 1000
+                point_array[i * resolution_x + j][2] = depth_image[i][j] / 1000
                 # TODO: 确定为什么要对x轴取反
-                point_array[i * resolution_x + j][0] = -((j - resolution_x / 2) / focal_x) * \
+                point_array[i * resolution_x + j][0] = ((j - resolution_x / 2) / focal_x) * \
                                                        point_array[i * resolution_x + j][2]
                 point_array[i * resolution_x + j][1] = ((i - resolution_y / 2) / focal_x) * \
                                                        point_array[i * resolution_x + j][2]
@@ -190,8 +190,8 @@ class CalibrationManager:
         print("[INFO] intrinsics.ppx: {}".format(intrinsics.ppx))
         print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
 
-        # points_cloud = self.create_points_cloud_with_color_csdn(depth_image, color_image, intrinsics)
-        points_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
+        points_cloud = self.create_points_cloud_with_color_csdn(depth_image, color_image, intrinsics)
+        # points_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
         o3d.visualization.draw_geometries([points_cloud])
         return points_cloud, color_image, depth_image
 
@@ -266,6 +266,22 @@ class CalibrationManager:
             pass
         self.__image_num += 1
 
+    def depth_image_2_point_cloud(self, path, cnt):
+        frames = self.__pipeline.wait_for_frames()
+        profile = frames.get_profile()
+        intrinsics = profile.as_video_stream_profile().get_intrinsics()
+        print("[INFO] intrinsics.width: {}".format(intrinsics.width))
+        print("[INFO] intrinsics.height: {}".format(intrinsics.height))
+        print("[INFO] intrinsics.fx: {}".format(intrinsics.fx))
+        print("[INFO] intrinsics.fy: {}".format(intrinsics.fy))
+        print("[INFO] intrinsics.ppx: {}".format(intrinsics.ppx))
+        print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
+
+        depth_image = np.load(path + "/depth_" + str(cnt) + ".npy")
+        color_image = cv2.imread(path + "/color_" + str(cnt) + ".jpg")
+        point_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
+        o3d.visualization.draw_geometries([point_cloud])
+
     def spherrors(self, para, points):
         """球面拟合误差"""
         a, b, c, r = para
@@ -322,9 +338,9 @@ class CalibrationManager:
 
     def run_loop(self):
         while True:
-            option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集数据并存储；\n"
-                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.拍摄并存储本地；\n"
-                           "5.旋转矩阵转RPY\nq.退出程序。\n输入:")
+            option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集球心和位姿并存储；\n"
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储；\n"
+                           "5.旋转矩阵转RPY；\n6.将本地深度图像和RGB图像转换成点云；\nq.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
@@ -337,6 +353,10 @@ class CalibrationManager:
                 self.take_photo()
             elif option == '5':
                 utils.rotation_matrix_2_rpy()
+            elif option == '6':
+                path = input("请输入文件路径:")
+                cnt = input("请输入图像的编号:")
+                self.depth_image_2_point_cloud(path, cnt)
             elif option == 'q':
                 print("bye bye~")
                 break
