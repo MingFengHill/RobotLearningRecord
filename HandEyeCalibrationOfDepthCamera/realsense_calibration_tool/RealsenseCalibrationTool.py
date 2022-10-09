@@ -35,11 +35,11 @@ class CalibrationManager:
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
         self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
-        self.realsense_init()
+        # self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        self.__pipeline.stop()
+        # self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
@@ -130,13 +130,13 @@ class CalibrationManager:
         points_cloud = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, pinhole_camera_intrinsic)
         return points_cloud
 
-    def create_points_cloud_with_color_myself(self, depth_image, color_image, intrinsics):
+    def create_points_cloud_with_color_myself(self, depth_image, color_image, fx):
         # TODO: realsense采集到图像像素x和y和设置的是相反的
         resolution_x = self.RESOLUTION_X
         resolution_y = self.RESOLUTION_Y
 
         point_array = np.zeros((resolution_x * resolution_y, 3))
-        focal_x = intrinsics.fx
+        focal_x = fx
         for i in range(resolution_y):
             for j in range(resolution_x):
                 point_array[i * resolution_x + j][2] = depth_image[i][j] / 1000
@@ -151,7 +151,6 @@ class CalibrationManager:
         return points_cloud
 
     def add_color_to_point_cloud(self, cloud_point, color_image):
-        # TODO: 该函数无法正常使用
         rgb_image = np.array(color_image, dtype=np.uint8)
         rgb_image.resize([self.RESOLUTION_X * self.RESOLUTION_Y, 3])
         color_array = np.zeros((self.RESOLUTION_X * self.RESOLUTION_Y, 3), dtype=np.float64)
@@ -191,7 +190,7 @@ class CalibrationManager:
         print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
 
         points_cloud = self.create_points_cloud_with_color_csdn(depth_image, color_image, intrinsics)
-        # points_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
+        # points_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics.fx)
         o3d.visualization.draw_geometries([points_cloud])
         return points_cloud, color_image, depth_image
 
@@ -267,20 +266,13 @@ class CalibrationManager:
         self.__image_num += 1
 
     def depth_image_2_point_cloud(self, path, cnt):
-        frames = self.__pipeline.wait_for_frames()
-        profile = frames.get_profile()
-        intrinsics = profile.as_video_stream_profile().get_intrinsics()
-        print("[INFO] intrinsics.width: {}".format(intrinsics.width))
-        print("[INFO] intrinsics.height: {}".format(intrinsics.height))
-        print("[INFO] intrinsics.fx: {}".format(intrinsics.fx))
-        print("[INFO] intrinsics.fy: {}".format(intrinsics.fy))
-        print("[INFO] intrinsics.ppx: {}".format(intrinsics.ppx))
-        print("[INFO] intrinsics.ppy: {}".format(intrinsics.ppy))
-
         depth_image = np.load(path + "/depth_" + str(cnt) + ".npy")
         color_image = cv2.imread(path + "/color_" + str(cnt) + ".jpg")
-        point_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, intrinsics)
+        fx = 384.65478515625
+        point_cloud = self.create_points_cloud_with_color_myself(depth_image, color_image, fx)
         o3d.visualization.draw_geometries([point_cloud])
+
+        self.find_sphere_center(point_cloud)
 
     def spherrors(self, para, points):
         """球面拟合误差"""
