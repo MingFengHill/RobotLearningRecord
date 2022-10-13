@@ -30,20 +30,28 @@ class CalibrationManager:
         self.__compute_fk_sp = None
         self.__cur_joint_state = None
         self.__joint_state_mtx = None
+        self.__point_cloud = None
+        self.__decimate = None
         self.__image_num = 1
         self.RESOLUTION_X = 640
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
         self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
-        # self.realsense_init()
+        self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        # self.__pipeline.stop()
+        self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
     def realsense_init(self):
+        # Declare pointcloud object, for calculating pointclouds and texture mappings
+        self.__point_cloud = rs.pointcloud()
+        # TODO: 确定入参含义
+        self.__decimate = rs.decimation_filter()
+        self.__decimate.set_option(rs.option.filter_magnitude, 2 ** 1)
+
         # Create a pipeline
         self.__pipeline = rs.pipeline()
 
@@ -129,6 +137,64 @@ class CalibrationManager:
             convert_rgb_to_intensity=False)
         points_cloud = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, pinhole_camera_intrinsic)
         return points_cloud
+
+    def create_points_cloud_with_color_realsense(self, test_focal_gt):
+        # Wait for a coherent pair of frames: depth and color
+        frames = self.__pipeline.wait_for_frames()
+
+        # Align the depth frame to color frame
+        aligned_frames = self.__align.process(frames)
+
+        depth_frame = aligned_frames.get_depth_frame()
+        color_frame = aligned_frames.get_color_frame()
+        # depth_frame = self.__decimate.process(depth_frame)
+
+        if not depth_frame or not color_frame:
+            print("[ERRO] depth frame or color frame is null")
+            return
+
+        # Convert images to numpy arrays
+        depth_image = np.asanyarray(depth_frame.get_data())
+        color_image = np.asanyarray(color_frame.get_data())
+
+        mapped_frame, color_source = color_frame, color_image
+        points = self.__point_cloud.calculate(depth_frame)
+        self.__point_cloud.map_to(mapped_frame)
+
+        # Pointcloud data to arrays
+        v, t = points.get_vertices(), points.get_texture_coordinates()
+        verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)  # xyz
+        texcoords = np.asanyarray(t).view(np.float32).reshape(-1, 2)  # uv
+
+        resolution_x = self.RESOLUTION_X
+        resolution_y = self.RESOLUTION_Y
+        point_array = np.zeros((resolution_x * resolution_y, 3))
+
+        points_cloud = o3d.geometry.PointCloud()
+        points_cloud.points = o3d.utility.Vector3dVector(verts)
+        self.add_color_to_point_cloud(points_cloud, color_image)
+
+        if test_focal_gt:
+            pcd = points_cloud
+            vis = o3d.visualization.VisualizerWithEditing()
+            vis.create_window()
+            vis.add_geometry(pcd)
+            vis.run()
+
+            # 画出选中点，验证选中点的位置符合预期
+            selected_points = vis.get_picked_points()
+            if len(selected_points) > 0:
+                draw = [pcd]
+                point_array = np.asarray(pcd.points)
+                for i in selected_points:
+                    mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=0.01)
+                    mesh_circle.compute_vertex_normals()
+                    mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
+                    mesh_circle = mesh_circle.translate((point_array[i][0], point_array[i][1], point_array[i][2]))
+                    draw.append(mesh_circle)
+                o3d.visualization.draw_geometries(draw)
+
+        return points_cloud, color_image, depth_image
 
     def create_points_cloud_with_color_myself(self, depth_image, color_image, fx):
         # TODO: realsense采集到图像像素x和y和设置的是相反的
@@ -246,7 +312,8 @@ class CalibrationManager:
             self.save_image(point_cloud, color_image, depth_image)
 
     def take_photo(self):
-        point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
+        # point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
+        point_cloud, color_image, depth_image = self.create_points_cloud_with_color_realsense(False)
         self.save_image(point_cloud, color_image, depth_image)
 
     def save_image(self, point_cloud, color_image, depth_image):
@@ -332,7 +399,8 @@ class CalibrationManager:
         while True:
             option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集球心和位姿并存储；\n"
                            "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储；\n"
-                           "5.旋转矩阵转RPY；\n6.将本地深度图像和RGB图像转换成点云；\nq.退出程序。\n输入:")
+                           "5.旋转矩阵转RPY；\n6.将本地深度图像和RGB图像转换成点云；\n"
+                           "7.RealSense原生API生成点云；\nq.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
@@ -349,6 +417,8 @@ class CalibrationManager:
                 path = input("请输入文件路径:")
                 cnt = input("请输入图像的编号:")
                 self.depth_image_2_point_cloud(path, cnt)
+            elif option == '7':
+                self.create_points_cloud_with_color_realsense(True)
             elif option == 'q':
                 print("bye bye~")
                 break
