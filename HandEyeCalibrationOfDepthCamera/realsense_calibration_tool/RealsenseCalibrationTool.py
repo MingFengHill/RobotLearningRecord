@@ -337,7 +337,7 @@ class CalibrationManager:
                 self.data_acquisition()
             elif option == '2':
                 path = input("请输入文件路径:")
-                utils.read_iamge(path)
+                utils.read_image(path)
             elif option == '3':
                 path = input("请输入文件路径:")
                 self.find_sphere_center_from_file(path)

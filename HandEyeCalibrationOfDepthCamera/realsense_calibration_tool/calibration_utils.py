@@ -102,10 +102,26 @@ def transform_matrix_inverse(base2end):
     return end2base
 
 
-def read_iamge(path):
+def read_image(path):
+    # 支持选中点
     pcd = o3d.io.read_point_cloud(path)
-    o3d.visualization.draw_geometries([pcd])
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window()
+    vis.add_geometry(pcd)
+    vis.run()
 
+    # 画出选中点，验证选中点的位置符合预期
+    selected_points = vis.get_picked_points()
+    if len(selected_points) > 0:
+        draw = [pcd]
+        point_array = np.asarray(pcd.points)
+        for i in selected_points:
+            mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=0.01)
+            mesh_circle.compute_vertex_normals()
+            mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
+            mesh_circle = mesh_circle.translate((point_array[i][0], point_array[i][1], point_array[i][2]))
+            draw.append(mesh_circle)
+        o3d.visualization.draw_geometries(draw)
 
 def main():
     pass
