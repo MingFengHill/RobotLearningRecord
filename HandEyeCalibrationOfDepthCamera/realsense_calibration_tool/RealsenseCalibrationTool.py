@@ -13,6 +13,7 @@ from sensor_msgs.msg import JointState
 import cv2
 import scipy.optimize as opt
 import calibration_utils as utils
+import re
 
 
 class CalibrationManager:
@@ -37,11 +38,11 @@ class CalibrationManager:
         self.RESOLUTION_Y = 480
         self.JOINT_STATE_TOPIC = "/joint_states"
         self.IMAGE_PATH = time.strftime("./%Y%m%d_%H%M/")
-        self.realsense_init()
+        # self.realsense_init()
         # self.ros_init()
 
     def __del__(self):
-        self.__pipeline.stop()
+        # self.__pipeline.stop()
         # self.__compute_fk_sp.close()
         pass
 
@@ -122,6 +123,7 @@ class CalibrationManager:
             covert realsense depth image to od3 points cloud [CSDN]
             https://blog.csdn.net/hongliyu_lvliyu/article/details/121816515
         """
+        # TODO: 该接口错误，原因待定位
         o3d_depth = o3d.geometry.Image(depth_image.copy())
         o3d_color = o3d.geometry.Image(color_image.copy())
         pinhole_camera_intrinsic = o3d.camera.PinholeCameraIntrinsic(
@@ -197,7 +199,7 @@ class CalibrationManager:
         return points_cloud, color_image, depth_image
 
     def create_points_cloud_with_color_myself(self, depth_image, color_image, fx):
-        # TODO: realsense采集到图像像素x和y和设置的是相反的
+        # TODO: 该接口错误，原因待定位
         resolution_x = self.RESOLUTION_X
         resolution_y = self.RESOLUTION_Y
 
@@ -292,24 +294,39 @@ class CalibrationManager:
         return end2base
 
     def data_acquisition(self):
-        point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
-        ret, sphere_center = self.find_sphere_center(point_cloud)
-        if ret is False:
-            print("[ERROR] can not find circle center")
-            return
+        point_cloud, color_image, depth_image = self.create_points_cloud_with_color_realsense(False)
+        o3d.visualization.draw_geometries([point_cloud])
         option = input("请输入选项中的数字：\n1.保存；\n2.不保存。\n输入:")
         if option == 1:
-            with open("circle_center.txt", "a+", encoding="utf-8") as f:
-                for i in range(len(sphere_center)):
-                    f.write("{:.14f}".format(sphere_center[i]) + " ")
-                f.write("\n")
+            self.save_image(point_cloud, color_image, depth_image)
             end2base = self.get_cur_robot_pose()
-            with open("base2end_matrix.txt", "a+", encoding="utf-8") as f:
+            with open(self.IMAGE_PATH + "/base2end_matrix.txt", "a+", encoding="utf-8") as f:
                 for i in range(3):
                     for j in range(4):
                         f.write(str(end2base[i][j]) + " ")
                 f.write("\n")
-            self.save_image(point_cloud, color_image, depth_image)
+
+    def calculate_sphere_center_from_folder(self, path):
+        file_name_list = os.listdir(path)
+        point_cloud_filenames = []
+        for file_name in file_name_list:
+            if re.match("point_cloud_*", file_name):
+                point_cloud_filenames.append(file_name)
+        failed_id = []
+        print("[INFO] find {} file: {}".format(len(point_cloud_filenames), point_cloud_filenames))
+        for i in range(len(point_cloud_filenames)):
+            num = i + 1
+            file_name = path + "/point_cloud_" + str(num) + ".pcd"
+            ret, sphere_center = self.find_sphere_center_from_file(file_name)
+            if ret is False:
+                print("[INFO] {} failed to find sphere".format(file_name))
+                failed_id.append(num)
+                continue
+            with open(path + "/circle_center.txt", "a+", encoding="utf-8") as f:
+                for j in range(len(sphere_center)):
+                    f.write("{:.14f}".format(sphere_center[j]) + " ")
+                f.write("\n")
+        print("[INFO] Failed ID: {}".format(failed_id))
 
     def take_photo(self):
         # point_cloud, color_image, depth_image = self.get_points_cloud_from_realsense()
@@ -380,7 +397,7 @@ class CalibrationManager:
                 continue
 
             print("[INFO] label {} center: {} radius: {}".format(i, sphere_center, sphere_radius))
-            if 0.080 > sphere_radius > 0.065:
+            if 0.04 > sphere_radius > 0.02:
                 # 可视化拟合结果
                 mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_radius)
                 mesh_circle.compute_vertex_normals()
@@ -393,14 +410,15 @@ class CalibrationManager:
 
     def find_sphere_center_from_file(self, path):
         point_cloud = o3d.io.read_point_cloud(path)
-        self.find_sphere_center(point_cloud)
+        return self.find_sphere_center(point_cloud)
 
     def run_loop(self):
         while True:
             option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集球心和位姿并存储；\n"
-                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储；\n"
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储;【错误】\n"
                            "5.旋转矩阵转RPY；\n6.将本地深度图像和RGB图像转换成点云；\n"
-                           "7.RealSense原生API生成点云；\nq.退出程序。\n输入:")
+                           "7.RealSense原生API生成点云;【正确】\n8.批量求解文件夹中的球心\n"
+                           "q.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
@@ -419,6 +437,9 @@ class CalibrationManager:
                 self.depth_image_2_point_cloud(path, cnt)
             elif option == '7':
                 self.create_points_cloud_with_color_realsense(True)
+            elif option == '8':
+                path = input("请输入文件路径:")
+                self.calculate_sphere_center_from_folder(path)
             elif option == 'q':
                 print("bye bye~")
                 break
