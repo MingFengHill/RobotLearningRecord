@@ -297,7 +297,7 @@ class CalibrationManager:
         point_cloud, color_image, depth_image = self.create_points_cloud_with_color_realsense(False)
         o3d.visualization.draw_geometries([point_cloud])
         option = input("请输入选项中的数字：\n1.保存；\n2.不保存。\n输入:")
-        if option == 1:
+        if option == '1':
             self.save_image(point_cloud, color_image, depth_image)
             end2base = self.get_cur_robot_pose()
             with open(self.IMAGE_PATH + "/base2end_matrix.txt", "a+", encoding="utf-8") as f:

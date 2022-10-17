@@ -96,9 +96,11 @@ def transform_matrix_inverse(base2end):
     base2end = np.matrix(base2end)
     end2base_matrix = np.linalg.inv(base2end)
     print(end2base_matrix)
+    # TODO: 为什么需要转成array？
+    end2base_matrix = np.asarray(end2base_matrix)
     end2base = ([[end2base_matrix[0][0], end2base_matrix[0][1], end2base_matrix[0][2], end2base_matrix[0][3]],
-                 [end2base_matrix[1][0], end2base_matrix[1][1], end2base_matrix[1][2], end2base_matrix[0][3]],
-                 [end2base_matrix[2][0], end2base_matrix[2][1], end2base_matrix[2][2], end2base_matrix[0][3]]])
+                 [end2base_matrix[1][0], end2base_matrix[1][1], end2base_matrix[1][2], end2base_matrix[1][3]],
+                 [end2base_matrix[2][0], end2base_matrix[2][1], end2base_matrix[2][2], end2base_matrix[2][3]]])
     return end2base
 
 
