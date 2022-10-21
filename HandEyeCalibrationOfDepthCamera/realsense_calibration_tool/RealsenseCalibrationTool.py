@@ -317,7 +317,8 @@ class CalibrationManager:
         for i in range(len(point_cloud_filenames)):
             num = i + 1
             file_name = path + "/point_cloud_" + str(num) + ".pcd"
-            ret, sphere_center = self.find_sphere_center_from_file(file_name)
+            # 不去显示球心，加速处理过程
+            ret, sphere_center = self.find_sphere_center_from_file(file_name, False)
             if ret is False:
                 print("[INFO] {} failed to find sphere".format(file_name))
                 failed_id.append(num)
@@ -376,7 +377,7 @@ class CalibrationManager:
         es = np.mean(np.abs(tparas[2]['fvec'])) / paras[3]  # 'fvec'即为spherrors的值
         return sphere_o, sphere_r, es
 
-    def find_sphere_center(self, point_cloud):
+    def find_sphere_center(self, point_cloud, is_display=True):
         labels = np.array(point_cloud.cluster_dbscan(eps=0.08, min_points=100, print_progress=True))
         max_label = labels.max()
         print(f"[INFO] point cloud has {max_label + 1} clusters")
@@ -403,22 +404,23 @@ class CalibrationManager:
                 mesh_circle.compute_vertex_normals()
                 mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
                 mesh_circle = mesh_circle.translate((sphere_center[0], sphere_center[1], sphere_center[2]))
-                o3d.visualization.draw_geometries([point_cloud, mesh_circle])
+                if is_display is True:
+                    o3d.visualization.draw_geometries([point_cloud, mesh_circle])
                 return True, sphere_center
 
         return False, []
 
-    def find_sphere_center_from_file(self, path):
+    def find_sphere_center_from_file(self, path, is_display=True):
         point_cloud = o3d.io.read_point_cloud(path)
-        return self.find_sphere_center(point_cloud)
+        return self.find_sphere_center(point_cloud, is_display)
 
     def run_loop(self):
         while True:
             option = input("Have fun~ :)\n请输入选项中的数字：\n1.采集球心和位姿并存储；\n"
-                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储;【错误】\n"
+                           "2.查看点云文件；\n3.提取指定点云中的标定球；\n4.采集图像并存储；【错误】\n"
                            "5.旋转矩阵转RPY；\n6.将本地深度图像和RGB图像转换成点云；\n"
-                           "7.RealSense原生API生成点云;【正确】\n8.批量求解文件夹中的球心\n"
-                           "q.退出程序。\n输入:")
+                           "7.RealSense原生API生成点云；【正确】\n8.批量求解文件夹中的球心；\n"
+                           "9.从文件夹中检查所有球心位置是否符合预期；\nq.退出程序。\n输入:")
             if option == '1':
                 self.data_acquisition()
             elif option == '2':
@@ -440,6 +442,9 @@ class CalibrationManager:
             elif option == '8':
                 path = input("请输入文件路径:")
                 self.calculate_sphere_center_from_folder(path)
+            elif option == '9':
+                path = input("请输入文件路径:")
+                utils.check_sphere_center_from_fold(path)
             elif option == 'q':
                 print("bye bye~")
                 break

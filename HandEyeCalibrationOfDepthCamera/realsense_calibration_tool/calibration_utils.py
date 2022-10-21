@@ -1,5 +1,7 @@
 import numpy as np
 import open3d as o3d
+import re
+import os
 
 
 # urdfpy
@@ -35,21 +37,21 @@ def matrix_to_rpy(R, solution=1):
     p = 0.0
     y = 0.0
 
-    if np.abs(R[2,0]) >= 1.0 - 1e-12:
+    if np.abs(R[2, 0]) >= 1.0 - 1e-12:
         y = 0.0
-        if R[2,0] < 0:
+        if R[2, 0] < 0:
             p = np.pi / 2
-            r = np.arctan2(R[0,1], R[0,2])
+            r = np.arctan2(R[0, 1], R[0, 2])
         else:
             p = -np.pi / 2
-            r = np.arctan2(-R[0,1], -R[0,2])
+            r = np.arctan2(-R[0, 1], -R[0, 2])
     else:
         if solution == 1:
-            p = -np.arcsin(R[2,0])
+            p = -np.arcsin(R[2, 0])
         else:
-            p = np.pi + np.arcsin(R[2,0])
-        r = np.arctan2(R[2,1] / np.cos(p), R[2,2] / np.cos(p))
-        y = np.arctan2(R[1,0] / np.cos(p), R[0,0] / np.cos(p))
+            p = np.pi + np.arcsin(R[2, 0])
+        r = np.arctan2(R[2, 1] / np.cos(p), R[2, 2] / np.cos(p))
+        y = np.arctan2(R[1, 0] / np.cos(p), R[0, 0] / np.cos(p))
 
     return np.array([r, p, y], dtype=np.float64)
 
@@ -124,6 +126,41 @@ def read_image(path):
             mesh_circle = mesh_circle.translate((point_array[i][0], point_array[i][1], point_array[i][2]))
             draw.append(mesh_circle)
         o3d.visualization.draw_geometries(draw)
+
+
+def check_sphere_center_from_fold(path):
+    sphere_centers = []
+    sphere_center_txt = path + "/circle_center.txt"
+    with open(sphere_center_txt, "r") as fileHandler:
+        line = fileHandler.readline()
+        while line:
+            print(line.split(' '))
+            sphere_centers.append(list(map(float, line.split(' ')[:-1])))
+            line = fileHandler.readline()
+
+    file_name_list = os.listdir(path)
+    point_cloud_filenames = []
+    for file_name in file_name_list:
+        if re.match("point_cloud_*", file_name):
+            point_cloud_filenames.append(file_name)
+    failed_id = []
+    cur = 0
+    for i in range(len(point_cloud_filenames) + 1):
+        cnt = i + 1
+        file_name = path + "/point_cloud_" + str(cnt) + ".pcd"
+        point_cloud = o3d.io.read_point_cloud(file_name)
+        sphere_center = sphere_centers[cur]
+        cur += 1
+        mesh_circle = o3d.geometry.TriangleMesh.create_sphere(radius=0.03)
+        mesh_circle.compute_vertex_normals()
+        mesh_circle.paint_uniform_color([0.9, 0.1, 0.1])
+        mesh_circle = mesh_circle.translate((sphere_center[0], sphere_center[1], sphere_center[2]))
+        o3d.visualization.draw_geometries([point_cloud, mesh_circle])
+        isOK = input("1.球心点定位错误；2.球心点定位正确。")
+        if isOK is '1':
+            failed_id.append(cnt)
+    print("球心点定位错误列表：{}".format(failed_id))
+
 
 def main():
     pass
